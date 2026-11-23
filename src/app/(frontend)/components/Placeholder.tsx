@@ -1,0 +1,14 @@
+import React from 'react'
+
+/**
+ * Marks text that still needs real content from PAMMRES. Deliberately
+ * conspicuous so nothing ships with a placeholder by accident; search the
+ * codebase for <Placeholder> to find every one.
+ */
+export function Placeholder({ children }: { children: React.ReactNode }) {
+  return (
+    <mark className="rounded-sm bg-qual/40 px-1 text-ink outline-1 outline-qual outline-dashed">
+      [{children}]
+    </mark>
+  )
+}
