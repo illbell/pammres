@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
       {
         pathname: '/api/media/file/**',
       },
+      // Site images committed to /public/images (e.g. the home page hero photo)
+      {
+        pathname: '/images/**',
+      },
     ],
   },
   webpack: (webpackConfig) => {
