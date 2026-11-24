@@ -24,7 +24,7 @@ export function HeroHeadline({
   return (
     <h1
       id={id}
-      className={`font-display leading-[0.95] font-bold tracking-[-0.035em] text-balance ${className}`}
+      className={`font-display leading-[1.08] font-semibold tracking-[-0.01em] text-balance ${className}`}
     >
       {words.map((word, i) => (
         <React.Fragment key={`${word}-${i}`}>

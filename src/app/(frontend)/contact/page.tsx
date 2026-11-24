@@ -2,19 +2,19 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
 
-import { membershipHref } from '../components/navigation'
+import { joinHref } from '../components/navigation'
 import { Placeholder } from '../components/Placeholder'
 import { ContactForm } from './ContactForm'
 
 export const metadata: Metadata = {
   title: 'Contact',
   description:
-    'Get in touch with PAMMRES about membership, events, publications or partnerships.',
+    'Get in touch with PAMMRES about membership, events, regional chapters or partnerships.',
 }
 
 const focusRing =
   'focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-ink'
-const linkClass = `rounded-sm font-semibold text-ink underline decoration-ink/25 decoration-2 underline-offset-4 transition-colors duration-150 hover:decoration-integrate motion-reduce:transition-none ${focusRing}`
+const linkClass = `rounded-sm font-semibold text-ink underline decoration-ink/25 decoration-2 underline-offset-4 transition-colors duration-150 hover:decoration-crimson motion-reduce:transition-none ${focusRing}`
 
 export default function ContactPage() {
   return (
@@ -63,7 +63,7 @@ export default function ContactPage() {
           </dl>
           <p className="mt-8 max-w-[24rem] text-base/relaxed text-ink-muted">
             Want to join? Read about{' '}
-            <Link href={membershipHref} className={linkClass}>
+            <Link href={joinHref} className={linkClass}>
               membership
             </Link>{' '}
             first.

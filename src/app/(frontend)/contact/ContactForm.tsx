@@ -89,7 +89,7 @@ export function ContactForm() {
         ref={successRef}
         tabIndex={-1}
         role="status"
-        className="rounded-2xl border border-integrate/60 bg-integrate/15 px-6 py-10 outline-none md:px-10"
+        className="rounded-2xl border border-gold/60 bg-cream px-6 py-10 outline-none md:px-10"
       >
         <h2 className="font-display text-2xl font-bold tracking-[-0.02em]">Message sent</h2>
         <p className="mt-3 text-lg/relaxed text-pretty text-ink-muted">
@@ -98,7 +98,7 @@ export function ContactForm() {
         </p>
         <a
           href="/contact"
-          className={`mt-6 inline-block rounded-sm font-semibold text-ink underline decoration-ink/25 decoration-2 underline-offset-4 hover:decoration-integrate ${focusRing}`}
+          className={`mt-6 inline-block rounded-sm font-semibold text-ink underline decoration-ink/25 decoration-2 underline-offset-4 hover:decoration-crimson ${focusRing}`}
         >
           Send another message
         </a>
