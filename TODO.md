@@ -76,45 +76,60 @@ Content lives in `content/identity.ts` (Vision, Mission, Core Values) and `conte
 
 ## 5. CMS (Payload) — make the guide's content editable
 
-- [ ] `Officers` collection: name, honorific, role, group (executive, regional, secretariat, tech), institution, photo, order, and current/past.
-- [ ] `ThemeGroups` collection: number, title, summary, mandate, and leader (relationship to `Officers`).
-- [ ] `Events` collection:
-  - title, type (webinar, workshop, conference, colloquium), dates, venue/online, registration URL, description, gallery
-  - `featured` flag for the announcement bar
-- [ ] `Partners` collection: name, abbreviation, logo, type (HEI, agency, international), URL.
-- [ ] `SiteSettings` global: announcement bar, contact email, Facebook URL, quick facts (e.g. "100+ researchers").
-- [ ] Optional: `About` global for Vision, Mission and Core Values. Keeping them hardcoded is fine until a need appears.
-- [ ] Access control:
-  - Public `read` on public content.
-  - `create`, `update` and `delete` only for authenticated users.
-  - Follow the Payload skill's security notes.
-- [ ] Run `pnpm generate:types`, and `pnpm generate:importmap` if needed.
-- [ ] Seed script with the guide's officers, theme groups and partners.
+- [x] `Officers` collection (`src/collections/Officers.ts`): name (with honorifics), role, institution, photo, group, current/past, term, order, slug. Past officers are grouped into About-page archive panels by `term`.
+- [x] `ThemeGroups` collection: number, title, summary (home pillar card), mandate, leader name and institution, icon. Leaders are free text rather than a link to `Officers`, because three of the four leaders aren't national officers.
+- [x] `Events` collection: title, dates, location, registration link, summary, rich-text description, cover image, gallery, type, `featured` flag. It has drafts (visitors see published events only). Not shown on the site until the Events page is built in phase 6.
+- [x] `Partners` collection: name, abbreviation, logo, website, type, "show on home" flag, order. It feeds the home page institution strip and the institution count.
+- [x] `SiteSettings` global: announcement (custom text / next featured event / hidden), official email, Facebook URL, mailing address. Used by the announcement bar, footer and contact page.
+- [ ] Optional: `About` global for Vision, Mission and Core Values. Still in `content/identity.ts`; add it only if editors need to change them.
+- [ ] Optional: move the quick stats ("100+ researchers") and the Our Story text into the CMS if they change often.
+- [x] Access control (`src/access/index.ts`):
+  - Public read.
+  - `create`, `update` and `delete` for signed-in users only.
+  - Events drafts hidden from visitors.
+  - Editor-entered links limited to http(s) or site paths (`src/fields/url.ts`).
+- [x] Revalidation (`src/hooks/revalidate.ts`): saving in the admin refreshes the affected static pages, and Site Settings refreshes every page. Verified end-to-end on a production build.
+- [x] Frontend loaders in `src/app/(frontend)/data/cms.ts` read as a public visitor (`overrideAccess: false`). If the database is unreachable, they fall back to the built-in content in `content/`.
+- [x] `pnpm generate:types`. The admin import map (`src/app/(payload)/admin/importMap.js`) picked up the rich-text editor components for the Events description; regenerate it with `pnpm generate:importmap` after adding rich-text or custom admin fields.
+- [x] `pnpm seed` (`src/seed/index.ts`): loads the guide's officers, 2019 inaugural officers, theme groups, partners and announcement. It creates only what's missing, so it never overwrites admin edits.
+- [x] Integration tests (`tests/int/content.int.spec.ts`): access control, drafts, officer validation, URL validation.
 
 ## 6. Remaining pages (guide gives outline only; placeholders until copy arrives)
 
-- [ ] **Membership** (`/membership`):
-  - [ ] Why Join.
-  - [ ] Categories & fees: Individual (Full, Associate/Emergent Scholar, Student) and Institutional. **(needs client: fees)**
-  - [ ] Application process and payment verification (bank transfer/GCash).
-  - [ ] Regional & School Chapters.
-- [ ] **Membership application**: a form plus a Payload collection, following the existing `ContactMessages` and `actions.ts` pattern.
-- [ ] **Member Login / directory**: decide the scope (Payload auth for members, or a link out). **(needs client decision)**
-- [ ] **Events & Training** (`/events`):
-  - [ ] Upcoming webinars and workshops.
-  - [ ] Conferences & colloquia (Filipino Mixed Methods Fair).
-  - [ ] Past trainings gallery, 2012 to present. **(needs client: photos)**
-- [ ] **Research & Policy** (`/research`):
-  - [ ] Journal & proceedings: links to JMMR and IJMRA. The old `Publications` collection was removed; add a new one only if PAMMRES wants to list papers on the site.
-  - [ ] SDG Hub.
-  - [ ] Indigenized Filipino MMR Framework.
-- [ ] **Mentorship & Resources** (`/mentorship`):
-  - [ ] Mentorship program.
-  - [ ] RIGs & expertise directory.
-  - [ ] Learning repository.
-- [ ] **Linkages & Contact** (`/contact`):
-  - [ ] Add a partners section and a "Sponsorship & Advocacy" block (host a workshop or sponsor).
-  - [ ] Align the `ContactMessages` topics with these options.
+All five pages are built. `PlannedSections` is removed. Where the guide gives no copy, the pages show yellow `<Placeholder>`s; search the code for `<Placeholder>` to find them all. The functional copy is ours and should be reviewed by PAMMRES: application steps, closing bands on Membership and Research, the SDG card descriptions, and the empty states.
+
+- [x] **Membership** (`/membership`):
+  - [x] Why Join: 4 benefit cards, using guide copy.
+  - [x] Categories: Full, Associate/Emergent Scholar, Student, Institutional.
+  - [x] Application steps and form.
+  - [x] Member Login placeholder.
+  - [x] Regional & School Chapters (Luzon, Visayas, Mindanao).
+- [ ] Membership fees and eligibility per category **(needs client)**.
+- [ ] Bank transfer / GCash account details for step 2 **(needs client)**.
+- [x] **Membership application**: `MembershipApplications` collection (no public access at all, since it holds personal data) plus a server action and form.
+  - Validation and honeypot.
+  - Data Privacy Act (RA 10173) consent checkbox.
+  - Editors set the status: new → payment verified → approved/declined.
+- [ ] Have PAMMRES review the consent wording and supply a privacy notice to link **(needs client)**.
+- [ ] Email the secretariat when an application or contact message arrives. Needs an email adapter (Resend/SMTP), which isn't configured yet.
+- [ ] **Member Login / directory**: decide the scope (Payload auth for members, or a link out) **(needs client decision)**. It blocks the expertise directory too.
+- [x] **Events & Training** (`/events`) is driven by the Events collection:
+  - [x] Upcoming events, with a calendar badge, Register Now and Details.
+  - [x] Conferences & colloquia: upcoming ones only (past ones are listed under Past Trainings).
+  - [x] Past trainings: photo grid for events with images, cards for the rest, and the guide's list of venues while there are no past events.
+  - [x] Event detail page `/events/[slug]`: rich-text description, gallery, details sidebar. Times are shown in PHT.
+  - [x] Hourly revalidation so events move from upcoming to past.
+- [ ] Add real events in the admin, with photos for the gallery **(needs client: dates, photos)**.
+- [x] **Research & Policy** (`/research`): journal (placeholder) with a JMMR link, SDG Hub, and Framework, each linking to its theme group.
+- [ ] IJMRA official URL, journal details and featured studies **(needs client)**.
+- [x] **Mentorship & Resources** (`/mentorship`): program, using guide copy, plus placeholders for the RIG directory and learning repository.
+- [x] **Linkages & Contact** (`/contact`):
+  - [x] MMIRA affiliation and the partners list from the CMS, grouped by type.
+  - [x] Sponsorship & Advocacy (`#partner`).
+  - [x] Secretariat contact details and the form.
+- [x] Contact topics now include chapters, mentorship, and hosting/sponsorship. The `publications` value is kept so earlier messages stay valid.
+- [x] Shared form components (`components/form.tsx`), used by both forms.
+- [x] Integration tests (`tests/int/membership.int.spec.ts`): validation, save, honeypot, no visitor access.
 
 ## 7. Quality & launch
 

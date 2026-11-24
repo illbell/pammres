@@ -1,16 +1,16 @@
 import Link from 'next/link'
 import React from 'react'
 
-import { institutions } from '../../content/institutions'
+import { getHomePartners } from '../../data/cms'
 import { ArrowRightIcon } from '../icons'
 import { LogoMark } from '../LogoMark'
 import { SectionHeading } from '../SectionHeading'
 import { textLink } from '../ui'
 
 // Quick stats drawn from figures in the website guide.
-const stats = [
+const getStats = (institutionCount: number) => [
   { value: '100+', label: 'active researchers and educators' },
-  { value: `${institutions.length}`, label: 'member institutions and agencies' },
+  { value: `${institutionCount}`, label: 'member institutions and agencies' },
   { value: '3', label: 'island groups: Luzon, Visayas and Mindanao' },
   { value: '2012', label: 'year our seminar-workshops began' },
 ]
@@ -29,7 +29,9 @@ const symbolism = [
 ]
 
 /** Who We Are & Logo Philosophy (guide Section 2): emblem left, story and stats right. */
-export function WhoWeAre() {
+export async function WhoWeAre() {
+  const stats = getStats((await getHomePartners()).length)
+
   return (
     <section aria-labelledby="who-title" className="bg-white">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-4 py-20 md:px-6 md:py-28 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-20">

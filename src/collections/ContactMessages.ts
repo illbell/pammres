@@ -3,9 +3,12 @@ import type { CollectionConfig } from 'payload'
 export const contactTopics = [
   { label: 'General question', value: 'general' },
   { label: 'Membership', value: 'membership' },
+  { label: 'Regional or school chapters', value: 'chapters' },
+  { label: 'Mentorship program', value: 'mentorship' },
   { label: 'Events and training', value: 'events' },
-  { label: 'Publications', value: 'publications' },
-  { label: 'Partnerships', value: 'partnerships' },
+  // Value kept as "publications" so earlier messages stay valid.
+  { label: 'Research and publications', value: 'publications' },
+  { label: 'Hosting a workshop or sponsorship', value: 'partnerships' },
 ] as const
 
 /**

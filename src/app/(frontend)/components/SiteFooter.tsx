@@ -3,14 +3,13 @@ import React from 'react'
 
 import { LogoMark } from './LogoMark'
 import {
-  contactEmail,
   contactHref,
-  facebookUrl,
   footerProgramLinks,
   footerQuickLinks,
   type NavLink,
   regions,
 } from './navigation'
+import { getSiteSettings } from '../data/cms'
 import { Placeholder } from './Placeholder'
 import { focusRingOnDark } from './ui'
 
@@ -34,7 +33,8 @@ function FooterColumn({ title, links }: { title: string; links: NavLink[] }) {
 }
 
 /** Four-column footer from the website guide, on deep navy. */
-export function SiteFooter() {
+export async function SiteFooter() {
+  const { contactEmail, facebookUrl } = await getSiteSettings()
   const year = new Date().getFullYear()
 
   return (

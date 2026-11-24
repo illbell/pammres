@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 
 import { resolvePhoto, type SitePhoto as SitePhotoData } from '../../content/images'
-import { institutions, type Institution } from '../../content/institutions'
+import { getHomePartners, type PartnerView } from '../../data/cms'
 import { ArrowRightIcon } from '../icons'
 import { SectionHeading } from '../SectionHeading'
 import { SitePhoto } from '../SitePhoto'
@@ -31,7 +31,7 @@ const gallery: (SitePhotoData & { caption: string })[] = [
   },
 ]
 
-function InstitutionBadge({ institution }: { institution: Institution }) {
+function InstitutionBadge({ institution }: { institution: PartnerView }) {
   return (
     <div
       title={institution.name}
@@ -39,8 +39,8 @@ function InstitutionBadge({ institution }: { institution: Institution }) {
     >
       {institution.logo ? (
         <Image
-          src={institution.logo}
-          alt={institution.name}
+          src={institution.logo.url}
+          alt={institution.logo.alt || institution.name}
           width={160}
           height={56}
           className="max-h-14 w-auto object-contain"
@@ -56,7 +56,8 @@ function InstitutionBadge({ institution }: { institution: Institution }) {
 }
 
 /** Institutional Reach & Past Highlights (guide Section 5): logo carousel + 3-photo strip. */
-export function InstitutionalReach() {
+export async function InstitutionalReach() {
+  const institutions = await getHomePartners()
   const photos = gallery.map((g) => ({ ...resolvePhoto(g), caption: g.caption }))
 
   return (
@@ -87,7 +88,7 @@ export function InstitutionalReach() {
             className="flex shrink-0 gap-4 motion-reduce:contents"
           >
             {institutions.map((inst) => (
-              <li key={inst.slug}>
+              <li key={inst.id}>
                 <InstitutionBadge institution={inst} />
               </li>
             ))}
@@ -95,7 +96,7 @@ export function InstitutionalReach() {
           {/* Duplicate for a seamless loop; hidden from assistive tech */}
           <ul aria-hidden="true" className="flex shrink-0 gap-4 motion-reduce:hidden">
             {institutions.map((inst) => (
-              <li key={inst.slug}>
+              <li key={inst.id}>
                 <InstitutionBadge institution={inst} />
               </li>
             ))}
