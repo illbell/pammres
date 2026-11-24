@@ -1,14 +1,16 @@
 import type { Metadata, Viewport } from 'next'
-import { Bricolage_Grotesque, IBM_Plex_Sans } from 'next/font/google'
+import { IBM_Plex_Sans, Source_Serif_4 } from 'next/font/google'
 import React from 'react'
 import { SiteFooter } from './components/SiteFooter'
 import { SiteHeader } from './components/SiteHeader'
 import './styles.css'
 
-const display = Bricolage_Grotesque({
+// Classic serif for headings, clean sans for body (per the website guide).
+const display = Source_Serif_4({
   subsets: ['latin'],
+  style: ['normal', 'italic'],
   display: 'swap',
-  variable: '--font-bricolage',
+  variable: '--font-serif',
 })
 
 const sans = IBM_Plex_Sans({
@@ -21,11 +23,11 @@ const sans = IBM_Plex_Sans({
 export const metadata: Metadata = {
   title: { default: 'PAMMRES', template: '%s | PAMMRES' },
   description:
-    'The Philippine Association of Mixed Methods Researchers & Emergent Scholars brings together researchers who combine qualitative and quantitative methods.',
+    'An engaged, interdisciplinary community of Filipino practitioner-scholars, educators, and emergent researchers advancing quality research education and evidence-based nation-building. The official Philippine affiliate of MMIRA.',
 }
 
 export const viewport: Viewport = {
-  themeColor: '#F2F4EF',
+  themeColor: '#FFFFFF',
 }
 
 export default function RootLayout(props: { children: React.ReactNode }) {

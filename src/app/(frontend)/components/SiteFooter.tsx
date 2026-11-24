@@ -2,70 +2,130 @@ import Link from 'next/link'
 import React from 'react'
 
 import { LogoMark } from './LogoMark'
-import { membershipHref, navItems } from './navigation'
+import {
+  contactEmail,
+  contactHref,
+  facebookUrl,
+  footerProgramLinks,
+  footerQuickLinks,
+  type NavLink,
+  regions,
+} from './navigation'
 import { Placeholder } from './Placeholder'
+import { focusRingOnDark } from './ui'
 
-const focusRing =
-  'focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-ink'
-const linkClass = `rounded-sm text-ink-muted no-underline transition-colors duration-150 hover:text-ink hover:underline hover:decoration-integrate hover:decoration-2 hover:underline-offset-4 motion-reduce:transition-none ${focusRing}`
+const linkClass = `rounded-sm text-white/75 no-underline transition-colors duration-150 hover:text-white hover:underline hover:decoration-gold hover:decoration-2 hover:underline-offset-4 motion-reduce:transition-none ${focusRingOnDark}`
 
+function FooterColumn({ title, links }: { title: string; links: NavLink[] }) {
+  return (
+    <nav aria-label={title}>
+      <h2 className="text-sm font-semibold tracking-[0.12em] text-gold-soft uppercase">{title}</h2>
+      <ul className="mt-5 space-y-3 text-base">
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link href={link.href} className={linkClass}>
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+/** Four-column footer from the website guide, on deep navy. */
 export function SiteFooter() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="mt-auto border-t border-rule">
-      <div className="mx-auto grid max-w-[1280px] grid-cols-2 gap-x-6 gap-y-12 px-6 py-14 md:px-14 md:py-16 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]">
-        <div className="col-span-2 lg:col-span-1">
-          <Link href="/" className={`inline-flex items-center gap-3 rounded-lg no-underline ${focusRing}`}>
-            <LogoMark className="size-10" />
-            <span className="font-display text-2xl font-bold tracking-[-0.01em]" translate="no">
+    <footer className="mt-auto bg-navy-deep text-white">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-x-10 gap-y-12 px-6 py-16 sm:grid-cols-2 md:px-10 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))] lg:py-20">
+        {/* Col 1: logo, short mission, Facebook */}
+        <div className="sm:col-span-2 lg:col-span-1">
+          <Link
+            href="/"
+            className={`inline-flex items-center gap-3 rounded-lg no-underline ${focusRingOnDark}`}
+          >
+            <LogoMark className="size-12" />
+            <span className="font-display text-2xl font-bold text-white" translate="no">
               PAMMRES
             </span>
           </Link>
-          <p className="mt-5 max-w-[26rem] text-base/relaxed text-pretty text-ink-muted">
-            Philippine Association of Mixed Methods Researchers &amp; Emergent Scholars. A
-            community for researchers who combine qualitative and quantitative methods.
+          <p className="mt-3 text-sm text-white/60">
+            Philippine Association of Mixed Methods Researchers and Emergent Scholars · Official
+            Philippine Affiliate of MMIRA
           </p>
-          <Link
-            href={membershipHref}
-            className={`mt-6 inline-block rounded-full bg-ink px-5 py-2.5 text-base font-semibold text-ground no-underline transition-colors duration-150 hover:bg-ink/85 motion-reduce:transition-none ${focusRing}`}
-          >
-            Become a member
-          </Link>
+          <p className="mt-5 max-w-[26rem] text-base/relaxed text-pretty text-white/80">
+            An engaged, interdisciplinary community of Filipino practitioner-scholars, educators,
+            and emergent researchers advancing quality research education and evidence-based
+            nation-building.
+          </p>
+          <p className="mt-6">
+            {facebookUrl ? (
+              <a
+                href={facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-2 ${linkClass}`}
+              >
+                <svg viewBox="0 0 24 24" className="size-5 fill-current" aria-hidden="true">
+                  <path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21h3z" />
+                </svg>
+                PAMMRES on Facebook
+                <span className="sr-only">(opens in a new tab)</span>
+              </a>
+            ) : (
+              <Placeholder>Facebook page link</Placeholder>
+            )}
+          </p>
         </div>
 
-        <nav aria-label="Footer">
-          <h2 className="text-base font-semibold">Explore</h2>
-          <ul className="mt-4 space-y-2.5 text-base">
-            {navItems.map((item) => (
-              <li key={item.label}>
-                <Link href={item.href} className={linkClass}>
-                  {item.label}
-                </Link>
+        {/* Col 2 and 3 */}
+        <FooterColumn title="Quick Links" links={footerQuickLinks} />
+        <FooterColumn title="Programs" links={footerProgramLinks} />
+
+        {/* Col 4: Contact Secretariat */}
+        <div>
+          <h2 className="text-sm font-semibold tracking-[0.12em] text-gold-soft uppercase">
+            Contact Secretariat
+          </h2>
+          <ul className="mt-5 space-y-3 text-base text-white/75">
+            <li>
+              {contactEmail ? (
+                <a href={`mailto:${contactEmail}`} className={linkClass}>
+                  {contactEmail}
+                </a>
+              ) : (
+                <Placeholder>official email</Placeholder>
+              )}
+            </li>
+            <li>
+              <Link href={contactHref} className={linkClass}>
+                Send an inquiry
+              </Link>
+            </li>
+          </ul>
+          <h3 className="mt-7 text-sm font-semibold text-white">Regional Chapter Inquiries</h3>
+          <ul className="mt-3 flex flex-wrap gap-2" aria-label="Regions">
+            {regions.map((region) => (
+              <li
+                key={region}
+                className="rounded-full border border-white/25 px-3.5 py-1 text-sm text-white/85"
+              >
+                {region}
               </li>
             ))}
           </ul>
-        </nav>
-
-        {/* TODO: replace with PAMMRES's real contact details */}
-        <div>
-          <h2 className="text-base font-semibold">Get in touch</h2>
-          <ul className="mt-4 space-y-2.5 text-base text-ink-muted">
-            <li>
-              <Placeholder>contact email</Placeholder>
-            </li>
-            <li>
-              <Placeholder>mailing address</Placeholder>
-            </li>
-            <li>
-              <Placeholder>Facebook or other social links</Placeholder>
-            </li>
-          </ul>
+          <p className="mt-4 text-base">
+            <Link href={contactHref} className={linkClass}>
+              Ask about a chapter in your region
+            </Link>
+          </p>
         </div>
       </div>
 
-      <div className="border-t border-rule">
-        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-6 text-sm text-ink-muted md:px-14">
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-6 text-sm text-white/60 md:px-10">
           <p>
             © {year} <span translate="no">PAMMRES</span>. All rights reserved.
           </p>

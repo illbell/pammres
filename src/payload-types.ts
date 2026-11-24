@@ -69,7 +69,6 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    publications: Publication;
     'contact-messages': ContactMessage;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -80,7 +79,6 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    publications: PublicationsSelect<false> | PublicationsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -167,32 +165,6 @@ export interface Media {
   focalY?: number | null;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "publications".
- */
-export interface Publication {
-  id: string;
-  title: string;
-  /**
-   * As they should appear in the citation, e.g. "Santos, M. A., & Reyes, J. C."
-   */
-  authors: string;
-  year: number;
-  type: 'journal-article' | 'book' | 'book-chapter' | 'conference-paper' | 'report' | 'thesis';
-  /**
-   * Journal, conference, publisher or institution.
-   */
-  venue?: string | null;
-  /**
-   * DOI or URL where the publication can be read, e.g. https://doi.org/…
-   */
-  url?: string | null;
-  abstract?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
  * Messages sent through the contact form on the website.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -240,10 +212,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
-      } | null)
-    | ({
-        relationTo: 'publications';
-        value: string | Publication;
       } | null)
     | ({
         relationTo: 'contact-messages';
@@ -331,22 +299,6 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "publications_select".
- */
-export interface PublicationsSelect<T extends boolean = true> {
-  title?: T;
-  authors?: T;
-  year?: T;
-  type?: T;
-  venue?: T;
-  url?: T;
-  abstract?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,26 +1,54 @@
 @import 'tailwindcss';
 
+/*
+ * PAMMRES palette, taken from the Q+Q emblem (see CLAUDE.md, "Design system").
+ * Brand: navy, crimson, gold, white. Cream is used for alternating bands.
+ */
 @theme inline {
-  --color-ground: #f2f4ef;
-  --color-ink: #1d2535;
-  --color-ink-muted: #4a5468;
-  --color-rule: rgb(29 37 53 / 0.12);
+  /* Brand */
+  --color-navy: #13294b;
+  --color-navy-deep: #0b1a33;
+  --color-navy-soft: #2a4370;
+  --color-crimson: #b0222f;
+  --color-crimson-hover: #8f1a25;
+  --color-gold: #d4a12a;
+  --color-gold-soft: #f0d58c;
+  --color-cream: #f7f3ea;
+
+  /* Semantic */
+  --color-ground: #ffffff;
+  --color-ink: #13294b;
+  --color-ink-muted: #4a5670;
+  --color-rule: rgb(19 41 75 / 0.12);
   --color-error: #a4271d;
 
-  /* Strand colors, tuned for the dark hero panel */
-  --color-quan: #9cc0ea;
-  --color-qual: #e2b567;
-  --color-integrate: #7ed4a6;
-  --color-integrate-hover: #a3e3c0;
+  --font-display: var(--font-serif), Georgia, 'Times New Roman', serif;
 
-  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  /* Institution logo strip on the home page (track holds two copies of the list) */
+  --animate-marquee: marquee 50s linear infinite;
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - 0.5rem));
+    }
+  }
   --font-sans: var(--font-plex), system-ui, sans-serif;
 }
 
 @layer base {
   html {
     color-scheme: light;
+    /* Keep in-page anchors clear of the sticky header (one row on mobile, two on desktop) */
+    scroll-padding-top: 5.5rem;
     -webkit-font-smoothing: antialiased;
+  }
+
+  @media (width >= 64rem) {
+    html {
+      scroll-padding-top: 9rem;
+    }
   }
 
   a,
@@ -31,6 +59,6 @@
 
 /* Faint graph-paper dot grid on the hero panel */
 @utility bg-dot-grid {
-  background-image: radial-gradient(rgb(242 244 239 / 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
   background-size: 24px 24px;
 }

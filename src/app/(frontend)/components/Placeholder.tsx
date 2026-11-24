@@ -7,7 +7,7 @@ import React from 'react'
  */
 export function Placeholder({ children }: { children: React.ReactNode }) {
   return (
-    <mark className="rounded-sm bg-qual/40 px-1 text-ink outline-1 outline-qual outline-dashed">
+    <mark className="rounded-sm bg-gold-soft px-1 text-ink outline-1 outline-gold outline-dashed">
       [{children}]
     </mark>
   )
