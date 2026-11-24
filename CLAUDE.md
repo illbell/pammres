@@ -97,6 +97,19 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 7. Founding & governance archive as an accordion: 2019 inaugural officers; Constitution, By-Laws and chapter guidelines (PDF placeholder).
 8. Closing CTA: "Be Part of Our Growing Community of Practice". Buttons: Apply for Membership / Explore Upcoming Events.
 
+## CMS content
+
+- **Editable in the admin (`/admin`):**
+  - collections: Officers, Theme Groups, Events, Partners, Membership Applications, Contact Messages
+  - global: Site Settings (announcement, email, Facebook, address)
+- **Pages read content** through the loaders in `src/app/(frontend)/data/cms.ts`, never by calling Payload directly from components. The loaders fall back to `src/app/(frontend)/content/*` when the database is down.
+- **New collections:**
+  - use the access helpers in `src/access/`
+  - use `revalidatePages([...])` from `src/hooks/revalidate.ts`
+  - run `validateUrl` on any link field
+  - run `pnpm generate:types` afterwards
+- **`pnpm seed`** fills an empty database with the guide's content. It is safe to re-run.
+
 ## Work checklist
 
 `TODO.md` (repo root) is the checklist of everything still needed to meet the guide. Check it before starting work, and tick items off as they're completed.
@@ -105,4 +118,4 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 
 - The palette and fonts are aligned: the tokens `navy`, `crimson`, `gold`, `cream` etc. are in `styles.css`, with Source Serif 4 for headings. Build new UI from the shared components (`ui.ts`, `SectionHeading`, `PageHeader`, `Card`, `CtaBand`, `Accordion`, `OfficerCard`). Don't write one-off styles.
 - The header, footer and nav match the guide. All links go through `navigation.ts`; don't hardcode hrefs.
-- Membership, Events, Research & Policy and Mentorship are placeholders (`PlannedSections`) until real copy arrives.
+- All pages are built. Content the guide doesn't supply (fees, payment details, journal, directories) is marked with `<Placeholder>`. Forms share `components/form.tsx`.

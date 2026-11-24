@@ -10,9 +10,8 @@ import { OfficerCard } from '../components/OfficerCard'
 import { PageHeader } from '../components/PageHeader'
 import { Placeholder } from '../components/Placeholder'
 import { SectionHeading } from '../components/SectionHeading'
-import { resolvePhoto } from '../content/images'
 import { coreValues, mission, vision } from '../content/identity'
-import { foundingOfficers, officerGroups, themeGroups } from '../content/officers'
+import { getOfficerGroups, getPastOfficers, getThemeGroups } from '../data/cms'
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -32,16 +31,6 @@ const quickFacts = [
     value: 'Methodological triangulation, peer mentorship, and evidence-based nation-building',
   },
 ]
-
-/** Officer headshot from /public/images/officers/<slug>.jpg, or null for the initials fallback. */
-function officerPhoto(slug: string, name: string) {
-  const photo = resolvePhoto({
-    src: `/images/officers/${slug}.jpg`,
-    alt: `Portrait of ${name}`,
-    brief: '',
-  })
-  return photo.exists ? { url: photo.src, alt: photo.alt } : null
-}
 
 function OurStory() {
   return (
@@ -206,7 +195,9 @@ function Emblem() {
   )
 }
 
-function Officers() {
+async function Officers() {
+  const officerGroups = await getOfficerGroups()
+
   return (
     <section id="officers" aria-labelledby="officers-title" className="bg-white">
       <div className="mx-auto max-w-[1280px] px-4 py-20 md:px-6 md:py-28">
@@ -233,12 +224,12 @@ function Officers() {
                 }`}
               >
                 {group.officers.map((officer) => (
-                  <li key={officer.slug}>
+                  <li key={officer.id}>
                     <OfficerCard
                       name={officer.name}
                       role={officer.role}
                       institution={officer.institution}
-                      photo={officerPhoto(officer.slug, officer.name)}
+                      photo={officer.photo}
                       size={group.size}
                     />
                   </li>
@@ -252,7 +243,9 @@ function Officers() {
   )
 }
 
-function ThemeLeaders() {
+async function ThemeLeaders() {
+  const themeGroups = await getThemeGroups()
+
   return (
     <section
       id="theme-leaders"
@@ -275,8 +268,10 @@ function ThemeLeaders() {
                   <span className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
                     Leader
                   </span>
-                  <span className="font-semibold text-navy">{theme.leader}</span>
-                  <span className="text-ink-muted">({theme.institution})</span>
+                  <span className="font-semibold text-navy">{theme.leaderName}</span>
+                  {theme.leaderInstitution && (
+                    <span className="text-ink-muted">({theme.leaderInstitution})</span>
+                  )}
                 </p>
                 <p className="mt-4">
                   <strong className="font-semibold text-navy">Mandate:</strong> {theme.mandate}
@@ -290,7 +285,9 @@ function ThemeLeaders() {
   )
 }
 
-function GovernanceArchive() {
+async function GovernanceArchive() {
+  const pastTerms = await getPastOfficers()
+
   return (
     <section id="governance" aria-labelledby="governance-title" className="bg-cream">
       <div className="mx-auto max-w-[960px] px-4 py-20 md:px-6 md:py-24">
@@ -302,13 +299,13 @@ function GovernanceArchive() {
         <div className="mt-12">
           <Accordion
             items={[
-              {
-                id: 'founding-officers',
-                title: 'Founding & 2019 Inaugural Officers',
+              ...pastTerms.map((t, i) => ({
+                id: i === 0 ? 'founding-officers' : `past-officers-${i}`,
+                title: t.term,
                 content: (
                   <dl className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                    {foundingOfficers.map((o) => (
-                      <div key={o.role}>
+                    {t.officers.map((o) => (
+                      <div key={`${o.role}-${o.name}`}>
                         <dt className="text-sm font-semibold tracking-[0.08em] text-crimson uppercase">
                           {o.role}
                         </dt>
@@ -317,7 +314,7 @@ function GovernanceArchive() {
                     ))}
                   </dl>
                 ),
-              },
+              })),
               {
                 id: 'constitution',
                 title: 'Constitution, By-Laws & Chapter Guidelines',

@@ -52,7 +52,8 @@ export async function submitContactMessage(
   if (!TOPICS.includes(values.topic)) errors.topic = 'Choose a topic from the list.'
 
   if (!values.message) errors.message = 'Enter your message.'
-  else if (values.message.length < 10) errors.message = 'Add a little more detail (at least 10 characters).'
+  else if (values.message.length < 10)
+    errors.message = 'Add a little more detail (at least 10 characters).'
   else if (values.message.length > 5000) errors.message = 'Use 5,000 characters or fewer.'
 
   if (Object.keys(errors).length > 0) {

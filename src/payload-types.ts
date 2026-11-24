@@ -67,9 +67,14 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
-    media: Media;
+    officers: Officer;
+    'theme-groups': ThemeGroup;
+    events: Event;
+    partners: Partner;
+    'membership-applications': MembershipApplication;
     'contact-messages': ContactMessage;
+    media: Media;
+    users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -77,9 +82,14 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    officers: OfficersSelect<false> | OfficersSelect<true>;
+    'theme-groups': ThemeGroupsSelect<false> | ThemeGroupsSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
+    'membership-applications': MembershipApplicationsSelect<false> | MembershipApplicationsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -89,8 +99,12 @@ export interface Config {
     defaultIDType: string;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -120,6 +134,207 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Current officers appear on the About page, grouped and sorted by "Order". Uncheck "Current officer" to move someone to the governance archive.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "officers".
+ */
+export interface Officer {
+  id: string;
+  /**
+   * As it should appear, with honorifics, e.g. "Dr. Maribel R. Gaite".
+   */
+  name: string;
+  role: string;
+  institution?: string | null;
+  /**
+   * Square headshot. Without one, the officer’s initials are shown.
+   */
+  photo?: (string | null) | Media;
+  current?: boolean | null;
+  group?: ('executive' | 'regional' | 'governance' | 'technology') | null;
+  /**
+   * For past officers. Officers with the same term share one archive panel, titled with this text, e.g. "Founding & 2019 Inaugural Officers".
+   */
+  term?: string | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  /**
+   * Filled from the name if left empty.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme-groups".
+ */
+export interface ThemeGroup {
+  id: string;
+  number: number;
+  title: string;
+  /**
+   * Shown on the home page pillar card.
+   */
+  summary: string;
+  /**
+   * Shown on the About page under the leader.
+   */
+  mandate: string;
+  leaderName: string;
+  leaderInstitution?: string | null;
+  icon: 'globe' | 'impact' | 'growth' | 'network';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate?: string | null;
+  /**
+   * Venue, or e.g. "Online via Zoom".
+   */
+  location?: string | null;
+  registrationUrl?: string | null;
+  /**
+   * One or two sentences for listings and the announcement bar.
+   */
+  summary: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  coverImage?: (string | null) | Media;
+  /**
+   * Photos from the event, for the past events gallery.
+   */
+  gallery?: (string | Media)[] | null;
+  type: 'webinar' | 'workshop' | 'conference' | 'colloquium' | 'fellowship' | 'other';
+  /**
+   * The soonest upcoming featured event is announced, unless Site Settings sets its own announcement.
+   */
+  featured?: boolean | null;
+  /**
+   * Filled from the title if left empty.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: string;
+  name: string;
+  /**
+   * e.g. DLSU, UP Diliman
+   */
+  shortName: string;
+  /**
+   * Transparent PNG or SVG works best. Without one, the name is shown.
+   */
+  logo?: (string | null) | Media;
+  url?: string | null;
+  type: 'hei' | 'basic-education' | 'government' | 'international' | 'other';
+  showOnHome?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  /**
+   * Filled from the shortName if left empty.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Applications from the Membership page. Verify the payment reference, then set the status.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "membership-applications".
+ */
+export interface MembershipApplication {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  category: 'full' | 'associate' | 'student' | 'institutional';
+  region: 'luzon' | 'visayas' | 'mindanao' | 'abroad';
+  institution: string;
+  position?: string | null;
+  discipline?: string | null;
+  paymentMethod: 'bank-transfer' | 'gcash' | 'not-yet';
+  paymentReference?: string | null;
+  notes?: string | null;
+  privacyConsent: boolean;
+  status: 'new' | 'payment-verified' | 'approved' | 'declined';
+  /**
+   * Only visible to editors.
+   */
+  internalNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Messages sent through the contact form on the website.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages".
+ */
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  affiliation?: string | null;
+  topic: 'general' | 'membership' | 'chapters' | 'mentorship' | 'events' | 'publications' | 'partnerships';
+  message: string;
+  status: 'new' | 'replied' | 'archived';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -147,42 +362,6 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * Messages sent through the contact form on the website.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-messages".
- */
-export interface ContactMessage {
-  id: string;
-  name: string;
-  email: string;
-  affiliation?: string | null;
-  topic: 'general' | 'membership' | 'events' | 'publications' | 'partnerships';
-  message: string;
-  status: 'new' | 'replied' | 'archived';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -206,16 +385,36 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
-        relationTo: 'users';
-        value: string | User;
+        relationTo: 'officers';
+        value: string | Officer;
+      } | null)
+    | ({
+        relationTo: 'theme-groups';
+        value: string | ThemeGroup;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: string | Event;
+      } | null)
+    | ({
+        relationTo: 'partners';
+        value: string | Partner;
+      } | null)
+    | ({
+        relationTo: 'membership-applications';
+        value: string | MembershipApplication;
+      } | null)
+    | ({
+        relationTo: 'contact-messages';
+        value: string | ContactMessage;
       } | null)
     | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
     | ({
-        relationTo: 'contact-messages';
-        value: string | ContactMessage;
+        relationTo: 'users';
+        value: string | User;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -261,26 +460,108 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "officers_select".
  */
-export interface UsersSelect<T extends boolean = true> {
+export interface OfficersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  institution?: T;
+  photo?: T;
+  current?: T;
+  group?: T;
+  term?: T;
+  order?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme-groups_select".
+ */
+export interface ThemeGroupsSelect<T extends boolean = true> {
+  number?: T;
+  title?: T;
+  summary?: T;
+  mandate?: T;
+  leaderName?: T;
+  leaderInstitution?: T;
+  icon?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  title?: T;
+  startDate?: T;
+  endDate?: T;
+  location?: T;
+  registrationUrl?: T;
+  summary?: T;
+  description?: T;
+  coverImage?: T;
+  gallery?: T;
+  type?: T;
+  featured?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  name?: T;
+  shortName?: T;
+  logo?: T;
+  url?: T;
+  type?: T;
+  showOnHome?: T;
+  order?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "membership-applications_select".
+ */
+export interface MembershipApplicationsSelect<T extends boolean = true> {
+  name?: T;
   email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  resetPasswordRequestedAt?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
+  phone?: T;
+  category?: T;
+  region?: T;
+  institution?: T;
+  position?: T;
+  discipline?: T;
+  paymentMethod?: T;
+  paymentReference?: T;
+  notes?: T;
+  privacyConsent?: T;
+  status?: T;
+  internalNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages_select".
+ */
+export interface ContactMessagesSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  affiliation?: T;
+  topic?: T;
+  message?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -302,17 +583,26 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-messages_select".
+ * via the `definition` "users_select".
  */
-export interface ContactMessagesSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  affiliation?: T;
-  topic?: T;
-  message?: T;
-  status?: T;
+export interface UsersSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  resetPasswordRequestedAt?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -353,6 +643,51 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: string;
+  announcement: {
+    mode: 'custom' | 'event' | 'hidden';
+    label?: string | null;
+    title?: string | null;
+    body?: string | null;
+    linkLabel?: string | null;
+    /**
+     * e.g. /events#upcoming or a registration link
+     */
+    linkUrl?: string | null;
+  };
+  contactEmail?: string | null;
+  facebookUrl?: string | null;
+  mailingAddress?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  announcement?:
+    | T
+    | {
+        mode?: T;
+        label?: T;
+        title?: T;
+        body?: T;
+        linkLabel?: T;
+        linkUrl?: T;
+      };
+  contactEmail?: T;
+  facebookUrl?: T;
+  mailingAddress?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

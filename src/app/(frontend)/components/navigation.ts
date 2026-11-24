@@ -37,6 +37,4 @@ export const footerProgramLinks: NavLink[] = [
 
 export const regions = ['Luzon', 'Visayas', 'Mindanao'] as const
 
-// TODO: fill in once PAMMRES supplies them (also used on the contact page).
-export const contactEmail: string | null = null
-export const facebookUrl: string | null = null
+// Contact email, Facebook and the announcement bar are edited in the admin: Site Settings.

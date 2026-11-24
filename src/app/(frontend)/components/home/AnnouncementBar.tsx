@@ -1,19 +1,20 @@
 import Link from 'next/link'
 import React from 'react'
 
+import { getSiteSettings } from '../../data/cms'
 import { ArrowRightIcon, MegaphoneIcon } from '../icons'
 import { textLink } from '../ui'
 
-// Copy from the website guide. TODO: make editable (SiteSettings global or featured Event) in phase 5.
-const announcement = {
-  label: 'Upcoming event',
-  title: 'PAMMRES Free Mini-Webinar Series & Research Colloquium',
-  body: 'Open to seasoned researchers, faculty, and graduate students nationwide.',
-  link: { label: 'Register Now', href: '/events#upcoming' },
-}
+/**
+ * White announcement / next-event bar directly under the hero (guide Section 1).
+ * Edited in the admin under Site Settings → Announcement; hidden when there's nothing to announce.
+ */
+export async function AnnouncementBar() {
+  const { announcement } = await getSiteSettings()
+  if (!announcement) return null
 
-/** White announcement / next-event bar directly under the hero (guide Section 1). */
-export function AnnouncementBar() {
+  const external = announcement.link && /^https?:\/\//.test(announcement.link.href)
+
   return (
     <aside aria-label="Announcement" className="border-b border-rule bg-white">
       <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-4 py-5 md:flex-row md:items-center md:gap-6 md:px-6">
@@ -23,15 +24,19 @@ export function AnnouncementBar() {
         </p>
         <p className="min-w-0 flex-1 text-base/relaxed text-ink">
           <strong className="font-semibold text-navy">{announcement.title}</strong>
-          <span className="text-ink-muted"> — {announcement.body}</span>
+          {announcement.body && <span className="text-ink-muted"> — {announcement.body}</span>}
         </p>
-        <Link
-          href={announcement.link.href}
-          className={`${textLink} inline-flex shrink-0 items-center gap-1.5 self-start md:self-auto`}
-        >
-          {announcement.link.label}
-          <ArrowRightIcon className="size-4" />
-        </Link>
+        {announcement.link && (
+          <Link
+            href={announcement.link.href}
+            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            className={`${textLink} inline-flex shrink-0 items-center gap-1.5 self-start md:self-auto`}
+          >
+            {announcement.link.label}
+            <ArrowRightIcon className="size-4" />
+            {external && <span className="sr-only">(opens in a new tab)</span>}
+          </Link>
+        )}
       </div>
     </aside>
   )
