@@ -12,8 +12,25 @@ import { usePathname } from 'next/navigation'
 import React, { useEffect, useId, useRef, useState } from 'react'
 
 import { LogoMark } from './LogoMark'
-import { joinHref, memberLoginHref, navItems } from './navigation'
+import { joinHref, memberAreaHref, memberLoginHref, navItems } from './navigation'
 import { button, buttonOutline, buttonPrimary, focusRing, focusRingOnDark } from './ui'
+
+/**
+ * Whether a member is signed in, from Payload's /api/members/me (sent with the
+ * auth cookie). Re-checked on navigation so login and logout show up at once.
+ */
+function useSignedInMember(pathname: string) {
+  const [signedIn, setSignedIn] = useState(false)
+  useEffect(() => {
+    const ctrl = new AbortController()
+    fetch('/api/members/me', { credentials: 'same-origin', signal: ctrl.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { user?: unknown } | null) => setSignedIn(Boolean(data?.user)))
+      .catch(() => {})
+    return () => ctrl.abort()
+  }, [pathname])
+  return signedIn
+}
 
 /**
  * Sticky site header from the website guide.
@@ -29,6 +46,9 @@ export function SiteHeader() {
   const pathname = usePathname()
   const isCurrent = (href: string) =>
     href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`)
+
+  // Signed-in member? Checked in the browser so every page can stay static.
+  const signedIn = useSignedInMember(pathname)
 
   const { scrollY } = useScroll()
   useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 8))
@@ -70,22 +90,30 @@ export function SiteHeader() {
         </Link>
 
         <div className="ml-auto hidden items-center gap-3 lg:flex">
-          <Link href={memberLoginHref} className={button('outline', 'md')}>
-            Member Login
-          </Link>
-          <Link
-            href={joinHref}
-            className={`${button('primary', 'md')} border-2 border-crimson hover:border-crimson-hover`}
-          >
-            Join PAMMRES
-          </Link>
+          {signedIn ? (
+            <Link href={memberAreaHref} className={button('outline', 'md')}>
+              My account
+            </Link>
+          ) : (
+            <>
+              <Link href={memberLoginHref} className={button('outline', 'md')}>
+                Member Login
+              </Link>
+              <Link
+                href={joinHref}
+                className={`${button('primary', 'md')} border-2 border-crimson hover:border-crimson-hover`}
+              >
+                Join PAMMRES
+              </Link>
+            </>
+          )}
         </div>
 
         <Link
-          href={joinHref}
-          className={`${button('primary', 'sm')} ml-auto hidden sm:inline-flex lg:hidden`}
+          href={signedIn ? memberAreaHref : joinHref}
+          className={`${button(signedIn ? 'outline' : 'primary', 'sm')} ml-auto whitespace-nowrap max-sm:hidden lg:hidden`}
         >
-          Join PAMMRES
+          {signedIn ? 'My account' : 'Join PAMMRES'}
         </Link>
 
         <button
@@ -168,16 +196,28 @@ export function SiteHeader() {
                 </li>
               ))}
               <li className="mt-5 grid gap-3 sm:grid-cols-2">
-                <Link
-                  href={memberLoginHref}
-                  onClick={() => setOpen(false)}
-                  className={buttonOutline}
-                >
-                  Member Login
-                </Link>
-                <Link href={joinHref} onClick={() => setOpen(false)} className={buttonPrimary}>
-                  Join PAMMRES
-                </Link>
+                {signedIn ? (
+                  <Link
+                    href={memberAreaHref}
+                    onClick={() => setOpen(false)}
+                    className={buttonOutline}
+                  >
+                    My account
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      href={memberLoginHref}
+                      onClick={() => setOpen(false)}
+                      className={buttonOutline}
+                    >
+                      Member Login
+                    </Link>
+                    <Link href={joinHref} onClick={() => setOpen(false)} className={buttonPrimary}>
+                      Join PAMMRES
+                    </Link>
+                  </>
+                )}
               </li>
             </ul>
           </motion.nav>

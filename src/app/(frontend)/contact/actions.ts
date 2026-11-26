@@ -4,6 +4,7 @@ import config from '@payload-config'
 import { getPayload } from 'payload'
 
 import { contactTopics } from '@/collections/ContactMessages'
+import { allowRequest, HOUR } from '@/lib/rateLimit'
 
 export type ContactField = 'name' | 'email' | 'affiliation' | 'topic' | 'message'
 
@@ -61,6 +62,16 @@ export async function submitContactMessage(
       status: 'error',
       message: 'Check the highlighted fields and try again.',
       errors,
+      values,
+    }
+  }
+
+  // At most 5 messages an hour from one visitor (spam and flooding).
+  if (!(await allowRequest('contact', 5, HOUR))) {
+    return {
+      status: 'error',
+      message:
+        'You’ve sent several messages in a short time. Please wait a while before sending another, or email the secretariat directly.',
       values,
     }
   }

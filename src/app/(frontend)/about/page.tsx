@@ -10,7 +10,9 @@ import { OfficerCard } from '../components/OfficerCard'
 import { PageHeader } from '../components/PageHeader'
 import { Placeholder } from '../components/Placeholder'
 import { SectionHeading } from '../components/SectionHeading'
+import { SitePhoto } from '../components/SitePhoto'
 import { coreValues, mission, vision } from '../content/identity'
+import { resolvePhoto } from '../content/images'
 import { getOfficerGroups, getPastOfficers, getThemeGroups } from '../data/cms'
 
 export const metadata: Metadata = {
@@ -116,24 +118,33 @@ function VisionMissionValues() {
               key={value.title}
               className="flex w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
             >
-              <article className="flex w-full flex-col rounded-xl border border-rule border-t-4 border-t-navy bg-white p-6 shadow-sm transition-[translate,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-7">
-                <span
-                  aria-hidden="true"
-                  className="grid size-11 place-items-center rounded-full bg-gold/20 font-display text-xl font-semibold text-navy"
-                >
-                  {i + 1}
-                </span>
-                <h4 className="mt-4 font-display text-xl leading-snug font-semibold text-balance text-navy">
-                  {i === 0 ? (
-                    <>
-                      <em>Bayanihan</em> and Inclusive Fellowship
-                    </>
-                  ) : (
-                    value.title
-                  )}
-                </h4>
-                <p className="mt-2 text-base/snug font-semibold text-crimson">{value.tagline}</p>
-                <p className="mt-3 text-base/relaxed text-ink-muted">{value.description}</p>
+              <article className="flex w-full flex-col overflow-hidden rounded-xl border border-rule border-t-4 border-t-navy bg-white shadow-sm transition-[translate,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+                <div className="relative aspect-[3/2]">
+                  <SitePhoto
+                    photo={resolvePhoto(value.photo)}
+                    sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
+                  />
+                  {/* Number badge in the photo's top-left corner */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-4 left-4 grid size-11 place-items-center rounded-full bg-gold font-display text-xl font-semibold text-navy-deep shadow-md ring-4 ring-white/90"
+                  >
+                    {i + 1}
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col p-6 md:p-7">
+                  <h4 className="font-display text-xl leading-snug font-semibold text-balance text-navy">
+                    {i === 0 ? (
+                      <>
+                        <em>Bayanihan</em> and Inclusive Fellowship
+                      </>
+                    ) : (
+                      value.title
+                    )}
+                  </h4>
+                  <p className="mt-2 text-base/snug font-semibold text-crimson">{value.tagline}</p>
+                  <p className="mt-3 text-base/relaxed text-ink-muted">{value.description}</p>
+                </div>
               </article>
             </li>
           ))}

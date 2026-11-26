@@ -40,6 +40,8 @@
 @layer base {
   html {
     color-scheme: light;
+    /* Client request: slightly larger text. Every rem-based size scales with it (16px -> 17px). */
+    font-size: 106.25%;
     /* Keep in-page anchors clear of the sticky header (one row on mobile, two on desktop) */
     scroll-padding-top: 5.5rem;
     -webkit-font-smoothing: antialiased;
@@ -61,4 +63,19 @@
 @utility bg-dot-grid {
   background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+
+/*
+ * Loading screen fail-safe: if JavaScript never hides #site-loader, fade it
+ * out after 8s so the page is never blocked. The loader itself gives up at 6s.
+ */
+#site-loader {
+  animation: site-loader-failsafe 0.4s ease-out 8s forwards;
+}
+
+@keyframes site-loader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
 }

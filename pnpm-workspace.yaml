@@ -3,3 +3,9 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   workerd: true
+
+# Security overrides for vulnerable transitive dependencies (pnpm audit, 2026-11-26):
+# happy-dom via @payloadcms/richtext-lexical > @lexical/headless; dompurify via the admin's Monaco editor.
+overrides:
+  happy-dom: '>=21.0.4'
+  dompurify: '>=3.4.17'

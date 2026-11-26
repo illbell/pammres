@@ -27,6 +27,8 @@ export const Events: CollectionConfig = {
   versions: { drafts: true },
   access: {
     read: publishedOrAuthenticated,
+    // Draft history is editors-only (Payload's default lets any signed-in user, including members, read it)
+    readVersions: authenticated,
     create: authenticated,
     update: authenticated,
     delete: authenticated,

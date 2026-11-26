@@ -10,10 +10,13 @@ import React from 'react'
 export function HeroHeadline({
   id,
   text,
+  as: Heading = 'h1',
   className = 'text-[clamp(2.5rem,5.2vw,4.75rem)]',
 }: {
   id: string
   text: string
+  /** h2 when another hero above it holds the page's h1 */
+  as?: 'h1' | 'h2'
   /** Size and width classes */
   className?: string
 }) {
@@ -22,7 +25,7 @@ export function HeroHeadline({
   const words = text.split(' ')
 
   return (
-    <h1
+    <Heading
       id={id}
       className={`font-display leading-[1.08] font-semibold tracking-[-0.01em] text-balance ${className}`}
     >
@@ -45,6 +48,6 @@ export function HeroHeadline({
           {i < words.length - 1 && ' '}
         </React.Fragment>
       ))}
-    </h1>
+    </Heading>
   )
 }

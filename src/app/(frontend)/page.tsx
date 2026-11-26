@@ -7,6 +7,7 @@ import { HomeHero } from './components/home/HomeHero'
 import { InstitutionalReach } from './components/home/InstitutionalReach'
 import { MembershipSpotlight } from './components/home/MembershipSpotlight'
 import { StrategicPillars } from './components/home/StrategicPillars'
+import { WelcomeHero } from './components/home/WelcomeHero'
 import { WhoWeAre } from './components/home/WhoWeAre'
 import { joinHref, partnerHref } from './components/navigation'
 
@@ -16,11 +17,15 @@ export const metadata: Metadata = {
   },
 }
 
-/** Homepage, following the wireframe in PAMMRES Website Guide.pdf (Sections 1–6). */
+/**
+ * Homepage, following the wireframe in PAMMRES Website Guide.pdf (Sections 1–6),
+ * with the client's welcome hero (2026-11-26 revisions) above the split hero.
+ */
 export default function HomePage() {
   return (
     // mb-0!: the crimson band sits directly on the footer
     <main id="main" className="mb-0!">
+      <WelcomeHero />
       <HomeHero />
       <AnnouncementBar />
       <WhoWeAre />

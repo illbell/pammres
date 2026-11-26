@@ -12,7 +12,7 @@ const getStats = (institutionCount: number) => [
   { value: '100+', label: 'active researchers and educators' },
   { value: `${institutionCount}`, label: 'member institutions and agencies' },
   { value: '3', label: 'island groups: Luzon, Visayas and Mindanao' },
-  { value: '2012', label: 'year our seminar-workshops began' },
+  { value: '2018', label: 'year our seminar-workshops began' },
 ]
 
 const symbolism = [
