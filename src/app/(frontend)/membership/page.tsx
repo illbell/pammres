@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
 
-import { membershipFees } from '@/collections/MembershipApplications'
+import { membershipFees } from '@/collections/membership'
 
 import { Card } from '../components/Card'
 import { CtaBand } from '../components/CtaBand'

@@ -36,7 +36,7 @@ Rules:
 
 1. **Home**: hero, announcement/next-event bar, Who We Are snapshot, 4 Strategic Pillars, institution logo strip.
 2. **About Us**: Our Story & logo meaning; Vision, Mission & Core Values; National Officers & Executive Board; Theme Group Leaders; Constitution, By-Laws & past officers.
-3. **Membership & Chapters**: Why Join (benefits); categories & fees (client revision, 2026-11-26: Regular ₱500, Student ₱300, Institutional ₱2,000; set in `membershipFees` in `src/collections/MembershipApplications.ts`); online application, payment verification (bank transfer/GCash) & member login. (The client removed the Regional & School Chapters section on 2026-11-26.)
+3. **Membership & Chapters**: Why Join (benefits); categories & fees (client revision, 2026-11-26: Regular ₱500, Student ₱300, Institutional ₱2,000; set in `membershipFees` in `src/collections/membership.ts`); online application, payment verification (bank transfer/GCash) & member login. (The client removed the Regional & School Chapters section on 2026-11-26.)
 4. **Events, Training & Conferences**: upcoming webinars & workshops; conferences & colloquia (The Filipino Mixed Methods Fair); past trainings & gallery (2018 to present; the client corrected the start year).
 5. **Research, Publications & Policy Impact**: PAMMRES Research Journal & proceedings (links to JMMR, IJMRA); Societal Impact & SDG Hub (SDGs 1–10, LGU research hubs, policy briefs); Indigenized Filipino MMR Framework.
 6. **Resources** (`/resources`; `/mentorship` redirects). The client dropped the Mentorship Program section (2026-11-26). It holds: Research Interest Groups & expertise directory; Learning Repository (recordings, slides, joint display guides, toolkits).
@@ -103,7 +103,7 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 ## CMS content
 
 - **Editable in the admin (`/admin`):**
-  - collections: Officers, Theme Groups, Events, News, Partners, Members, Contact Messages (Membership Applications is closed and kept for history)
+  - collections: Officers, Theme Groups, Events, News, Partners, Members, Member Photos, Contact Messages
   - global: Site Settings (announcement, email, Facebook, address)
 - **Pages read content** through the loaders in `src/app/(frontend)/data/cms.ts`, never by calling Payload directly from components. The loaders fall back to `src/app/(frontend)/content/*` when the database is down.
 - **Two kinds of account:** editors (`users`, sign in at `/admin`) and members (`members`, sign in at `/login`). Access must check for an editor (`authenticated`/`isEditor` in `src/access/`), never just "someone is signed in". Give every new collection explicit `read/create/update/delete` (and `readVersions` if drafts) so Payload's "any signed-in user" default never applies.

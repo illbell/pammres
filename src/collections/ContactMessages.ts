@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { authenticated } from '../access'
+
 export const contactTopics = [
   { label: 'General question', value: 'general' },
   { label: 'Membership', value: 'membership' },
@@ -25,10 +27,11 @@ export const ContactMessages: CollectionConfig = {
     description: 'Messages sent through the contact form on the website.',
   },
   access: {
-    read: ({ req }) => Boolean(req.user),
-    create: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    // Editors only: messages hold visitors' personal data, so members must not see them.
+    read: authenticated,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
   },
   defaultSort: '-createdAt',
   fields: [

@@ -11,7 +11,7 @@ import {
   researchDesigns,
   researchInterestOptions,
 } from '@/collections/Members'
-import { membershipCategories, paymentMethods } from '@/collections/MembershipApplications'
+import { membershipCategories, paymentMethods } from '@/collections/membership'
 import type { Member } from '@/payload-types'
 
 import { AUTH_COOKIE, getCurrentMember, safeNext } from '../data/member'

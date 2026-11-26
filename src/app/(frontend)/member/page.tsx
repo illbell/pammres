@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 
 import { MEMBER_STEPS, researchDesigns, researchInterestOptions } from '@/collections/Members'
-import { membershipCategories, membershipFees } from '@/collections/MembershipApplications'
+import { membershipCategories, membershipFees } from '@/collections/membership'
 import type { Member } from '@/payload-types'
 
 import { CheckIcon } from '../components/icons'

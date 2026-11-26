@@ -7,7 +7,7 @@ import {
   membershipCategories,
   membershipFees,
   paymentMethods,
-} from '@/collections/MembershipApplications'
+} from '@/collections/membership'
 import type { Member } from '@/payload-types'
 
 import { PageHeader } from '../../../components/PageHeader'

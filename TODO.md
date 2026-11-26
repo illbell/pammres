@@ -134,7 +134,7 @@ All five pages are built. `PlannedSections` is removed. Where the guide gives no
 - [x] Membership fees: Regular ₱500, Student ₱300, Institutional ₱2,000.
 - [ ] Eligibility per category ("Who it's for") **(needs client)**. Also confirm whether the fees are annual; the page just says "Membership fee".
 - [ ] Bank transfer / GCash account details for step 2 **(needs client)**.
-- [x] **Membership application**: `MembershipApplications` collection (no public access at all, since it holds personal data) plus a server action and form.
+- [x] ~~**Membership application**: `MembershipApplications` collection plus a server action and form.~~ Replaced by member accounts. The collection was removed on 2026-11-26; categories and fees are now in `src/collections/membership.ts`.
   - Validation and honeypot.
   - Data Privacy Act (RA 10173) consent checkbox.
   - Editors set the status: new → payment verified → approved/declined.

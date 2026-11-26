@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
-import { membershipCategories, membershipFees } from '@/collections/MembershipApplications'
+import { membershipCategories, membershipFees } from '@/collections/membership'
 
 import { PageHeader } from '../components/PageHeader'
 import { getCurrentMember } from '../data/member'

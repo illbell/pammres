@@ -173,7 +173,7 @@ describe('member accounts', () => {
       }),
     ).rejects.toThrow(FORBIDDEN)
     await expect(
-      payload.find({ collection: 'membership-applications', overrideAccess: false, user: memberA }),
+      payload.find({ collection: 'contact-messages', overrideAccess: false, user: memberA }),
     ).rejects.toThrow(FORBIDDEN)
   })
 

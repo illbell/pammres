@@ -1,7 +1,7 @@
 import type { CollectionConfig, Field } from 'payload'
 
 import { authenticated, authenticatedField, editorOrSelf } from '../access'
-import { membershipCategories, paymentMethods } from './MembershipApplications'
+import { membershipCategories, paymentMethods } from './membership'
 
 /*
  * PAMMRES members: site accounts (sign in at /login, never /admin) holding the

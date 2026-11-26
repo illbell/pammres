@@ -74,7 +74,6 @@ export interface Config {
     news: News;
     partners: Partner;
     members: Member;
-    'membership-applications': MembershipApplication;
     'contact-messages': ContactMessage;
     media: Media;
     'member-photos': MemberPhoto;
@@ -92,7 +91,6 @@ export interface Config {
     news: NewsSelect<false> | NewsSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
     members: MembersSelect<false> | MembersSelect<true>;
-    'membership-applications': MembershipApplicationsSelect<false> | MembershipApplicationsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'member-photos': MemberPhotosSelect<false> | MemberPhotosSelect<true>;
@@ -438,34 +436,6 @@ export interface MemberPhoto {
   focalY?: number | null;
 }
 /**
- * Applications sent through the old one-page membership form (before member accounts). New members now appear under Members.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "membership-applications".
- */
-export interface MembershipApplication {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string | null;
-  category: 'regular' | 'student' | 'institutional' | 'full' | 'associate';
-  region: 'luzon' | 'visayas' | 'mindanao' | 'abroad';
-  institution: string;
-  position?: string | null;
-  discipline?: string | null;
-  paymentMethod: 'bank-transfer' | 'gcash' | 'not-yet';
-  paymentReference?: string | null;
-  notes?: string | null;
-  privacyConsent: boolean;
-  status: 'new' | 'payment-verified' | 'approved' | 'declined';
-  /**
-   * Only visible to editors.
-   */
-  internalNotes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * Messages sent through the contact form on the website.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -555,10 +525,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'members';
         value: string | Member;
-      } | null)
-    | ({
-        relationTo: 'membership-applications';
-        value: string | MembershipApplication;
       } | null)
     | ({
         relationTo: 'contact-messages';
@@ -769,28 +735,6 @@ export interface MembersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "membership-applications_select".
- */
-export interface MembershipApplicationsSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  phone?: T;
-  category?: T;
-  region?: T;
-  institution?: T;
-  position?: T;
-  discipline?: T;
-  paymentMethod?: T;
-  paymentReference?: T;
-  notes?: T;
-  privacyConsent?: T;
-  status?: T;
-  internalNotes?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
