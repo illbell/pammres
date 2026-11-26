@@ -8,17 +8,17 @@ import { joinHref } from '../navigation'
 import { SitePhoto } from '../SitePhoto'
 import { button, focusRingOnDark } from '../ui'
 
-// Real PAMMRES photos from /public/images.
+// Real PAMMRES photos from /public/images. All landscape, so the collage uses landscape tiles.
 const collage: SitePhotoData[] = [
   {
-    src: '/images/members-3.jpg',
-    alt: 'PAMMRES members presenting a book to a fellow mixed methods scholar at an international conference',
-    brief: 'workshop group photo, portrait 4:5',
+    src: '/images/members-1.jpg',
+    alt: 'PAMMRES members in their association shirts with a fellow mixed methods scholar at an international conference',
+    brief: 'members group photo, 16:10',
   },
   {
     src: '/images/members-5.jpg',
     alt: 'PAMMRES delegates at the MMIRA 2026 conference',
-    brief: 'symposium speaker, 4:3',
+    brief: 'conference delegates, 4:3',
   },
   {
     src: '/images/members-4.jpg',
@@ -73,16 +73,16 @@ export function HomeHero() {
           </div>
         </div>
 
-        {/* Photo collage: one tall photo beside two stacked ones */}
-        <div className="grid h-[22rem] grid-cols-[3fr_2fr] grid-rows-2 gap-3 sm:h-[28rem] lg:h-[34rem]">
-          <div className="relative row-span-2 overflow-hidden rounded-2xl ring-1 ring-white/15">
-            <SitePhoto photo={main} sizes="(min-width: 1024px) 300px, 60vw" priority tone="dark" />
+        {/* Photo collage: one wide photo above two smaller ones */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="relative col-span-2 aspect-[16/10] overflow-hidden rounded-2xl ring-1 ring-white/15">
+            <SitePhoto photo={main} sizes="(min-width: 1024px) 480px, 100vw" priority tone="dark" />
           </div>
-          <div className="relative overflow-hidden rounded-2xl ring-1 ring-white/15">
-            <SitePhoto photo={top} sizes="(min-width: 1024px) 200px, 40vw" tone="dark" />
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-white/15">
+            <SitePhoto photo={top} sizes="(min-width: 1024px) 240px, 50vw" tone="dark" />
           </div>
-          <div className="relative overflow-hidden rounded-2xl border-b-4 border-gold ring-1 ring-white/15">
-            <SitePhoto photo={bottom} sizes="(min-width: 1024px) 200px, 40vw" tone="dark" />
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-b-4 border-gold ring-1 ring-white/15">
+            <SitePhoto photo={bottom} sizes="(min-width: 1024px) 240px, 50vw" tone="dark" />
           </div>
         </div>
       </div>

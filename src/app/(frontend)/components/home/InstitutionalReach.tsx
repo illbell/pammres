@@ -9,26 +9,25 @@ import { SectionHeading } from '../SectionHeading'
 import { SitePhoto } from '../SitePhoto'
 import { textLink } from '../ui'
 
-// Captions verbatim from the website guide.
-// TODO: UP Manila and Bulacan photos still needed (needs client: which photo is from which event).
+// Captions per the client (2026-11-26).
 const gallery: (SitePhotoData & { caption: string })[] = [
   {
-    src: '/images/home/gallery-up-manila.jpg',
-    alt: 'Inter-University Seminar-Workshop on Research Methods at UP Manila',
-    brief: 'UP Manila seminar-workshop, 4:3',
-    caption: 'Inter-University Seminar-Workshop on Research Methods (UP Manila)',
+    src: '/images/workshop-3.webp',
+    alt: 'A speaker at a seminar-workshop pointing to a slide on Humanistic and Safe AI for Human and National Development',
+    brief: 'Seminar-workshop, 4:3',
+    caption: 'Seminar-Workshop on Research Methods',
   },
   {
     src: '/images/workshop-1.jpg',
     alt: "A speaker at Halo-Halo 3: The Filipino Mixed Methods Fair, with Dr. John W. Creswell's session, Motivating a Mixed Methods Mindset, on screen",
     brief: 'Filipino Mixed Methods Fair, 4:3',
-    caption: 'The Filipino Mixed Methods Fair & International Colloquia',
+    caption: 'Halo-Halo 3: The Filipino Mixed Methods Fair',
   },
   {
-    src: '/images/home/gallery-bulacan.jpg',
-    alt: 'Seminar-workshop on doing and teaching research in Bulacan',
-    brief: 'Bulacan seminar-workshop, 4:3',
-    caption: 'Doing & Teaching Qualitative, Quantitative, and Mixed Methods Research (Bulacan)',
+    src: '/images/members-7.webp',
+    alt: 'PAMMRES members in matching shirts standing in a wide arc around the Philippine flag and the association plaque',
+    brief: 'PAMMRES members, 4:3',
+    caption: 'PAMMRES Members',
   },
 ]
 

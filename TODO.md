@@ -78,7 +78,7 @@ Sections live in `components/home/`; shared content is in `content/` (`pillars.t
 - [x] Old full-bleed `HeroPhoto` removed. `SitePhoto` shows a labelled placeholder until the file exists.
 - [x] Hero collage photos: `members-3.jpg`, `members-5.jpg`, `members-4.jpg` (in `HomeHero.tsx`).
 - [x] Gallery: The Filipino Mixed Methods Fair, `workshop-1.jpg` (Halo-Halo 3).
-- [ ] Gallery photos for the UP Manila and Bulacan seminar-workshops **(needs client: which photo is from which event)**. Until then they show placeholders at `public/images/home/gallery-up-manila.jpg` and `gallery-bulacan.jpg`.
+- [x] Home gallery photos and captions (client, 2026-11-26): seminar-workshop (`workshop-3.webp`), Halo-Halo 3 Fair (`workshop-1.jpg`), PAMMRES members (`members-7.webp`).
 - [ ] Institution logos **(needs client)**: set `logo` on each entry in `content/institutions.ts`. Until then the strip shows abbreviations and full names.
 - [ ] Re-check the "100+ researchers" and institution count with PAMMRES before launch.
 
@@ -91,7 +91,7 @@ Content lives in `content/identity.ts` (Vision, Mission, Core Values) and `conte
 - [x] Vision card (crimson top border) and Mission card (navy top border) with the final wording.
 - [x] Grid of 5 Core Value cards: number, title, tagline and full text.
 - [x] Core Value cards have a 3:2 photo slot at the top, with the number badge in its corner (client request). Each shows a placeholder until its file exists.
-- [ ] Core Value photos **(needs client)**: add them to `public/images/core-values/` as `1-bayanihan.jpg`, `2-methodological-rigor.jpg`, `3-integrity.jpg`, `4-curious-inquiry.jpg` and `5-social-responsibility.jpg` (3:2 landscape). Then replace each `alt` in `content/identity.ts` with a description of the photo.
+- [x] Core Value photos (client, 2026-11-26): `public/images/value-1.jpg` to `value-5.webp`, with alt text in `content/identity.ts`.
 - [x] Emblem meaning on a cream band, with the two annotated callouts.
 - [x] National Officers: all 14 from the guide, in rows of 2 / 3 / 6 / 3. Each shows initials until a headshot exists.
 - [ ] Officer headshots **(needs client)**: `public/images/officers/<slug>.jpg`, square. Slugs are in `content/officers.ts`. They appear automatically.
@@ -147,9 +147,12 @@ All five pages are built. `PlannedSections` is removed. Where the guide gives no
   - **Photos:** 2x2 photos go in the private `member-photos` collection (git-ignored folder).
   - **Tests:** `tests/int/members.int.spec.ts`.
 - [x] Research-interest options for step 3, from PAMMRES: Educational Research, Science Research, Program Evaluation, Business Research, Research Methodology.
+- [x] **Payment receipts** (client request, 2026-11-26): step 4 and renewal require a receipt upload (image or PDF, up to 5 MB). Receipts go in the private `payment-receipts` collection (owner and editors only, git-ignored folder). Images are re-encoded to strip metadata. Every receipt is kept as payment history.
+- [x] **Annual membership** (client request, 2026-11-26): approval sets **Membership expires** to one year later. From 30 days before expiry, or after it, members renew at `/member/renew`: category, payment and receipt → **Renewal pending** → the editor approves → +1 year from the old expiry (or from today if it had lapsed). Expired members lose member resources until renewed. The rules are in `src/collections/membership.ts` (`nextExpiry`, `membershipStanding`).
+- [ ] **Renewal reminders by email** need an email service (see below). For now members see the reminder on `/member`.
 - [ ] Members-only resource content (recordings, slides, guides, toolkits) **(needs client)**.
 - [ ] Email service (e.g. Resend) for password reset, approval notices and secretariat alerts. For now, a forgotten password is reset by an editor ("Change password" on the member in the admin).
-- [ ] Deploy: give Coolify a persistent volume for `media/` and `member-photos/` (uploads are stored on local disk).
+- [ ] Deploy: give Coolify a persistent volume for `media/`, `member-photos/` and `payment-receipts/` (uploads are stored on local disk).
 - [ ] Expertise directory: can now be built from approved members' profiles.
 - [x] **Events & Training** (`/events`) is driven by the Events collection:
   - [x] Upcoming events, with a calendar badge, Register Now and Details.

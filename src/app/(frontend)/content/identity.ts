@@ -32,8 +32,8 @@ export const coreValues: CoreValue[] = [
     description:
       'We nurture a welcoming, multidisciplinary community where seasoned practitioners and emergent scholars across all Philippine regions, sectors, and backgrounds mentor one another in respectful camaraderie.',
     photo: {
-      src: '/images/core-values/1-bayanihan.jpg',
-      alt: 'Photo for the core value: Bayanihan and Inclusive Fellowship',
+      src: '/images/value-1.jpg',
+      alt: 'Educators working together around tables with laptops and papers during a group workshop',
       brief: 'members together, fellowship or mentoring moment, 3:2',
     },
   },
@@ -44,8 +44,8 @@ export const coreValues: CoreValue[] = [
     description:
       'We pursue excellence in integrating qualitative and quantitative approaches—constantly refining our craft to uphold world-class standards while developing an indigenized Filipino mixed methods tradition.',
     photo: {
-      src: '/images/core-values/2-methodological-rigor.jpg',
-      alt: 'Photo for the core value: Methodological Rigor and Continuous Improvement',
+      src: '/images/value-2.jpg',
+      alt: 'A PAMMRES member going over printed materials with a fellow researcher at an international conference',
       brief: 'hands-on workshop or training session, 3:2',
     },
   },
@@ -55,8 +55,8 @@ export const coreValues: CoreValue[] = [
     description:
       'We anchor our inquiry in honesty, ethical stewardship, and openness to diverse perspectives—using methodological triangulation in a sincere quest for truth.',
     photo: {
-      src: '/images/core-values/3-integrity.jpg',
-      alt: 'Photo for the core value: Personal and Scholarly Integrity',
+      src: '/images/value-3.webp',
+      alt: 'A participant writing on a paper wall headed "Theme 2: Societal Impact" during a planning workshop',
       brief: 'research presentation or ethics discussion, 3:2',
     },
   },
@@ -66,8 +66,8 @@ export const coreValues: CoreValue[] = [
     description:
       'We cultivate lifelong learning, critical thinking, and creative problem-solving to address complex, evolving questions rooted in Philippine realities.',
     photo: {
-      src: '/images/core-values/4-curious-inquiry.jpg',
-      alt: 'Photo for the core value: Sustained and Curious Inquiry',
+      src: '/images/value-4.webp',
+      alt: 'PAMMRES members seated at tables listening to a speaker during a training session',
       brief: 'fieldwork, data analysis or small-group discussion, 3:2',
     },
   },
@@ -77,8 +77,8 @@ export const coreValues: CoreValue[] = [
     description:
       'We view research as an instrument of justice—standing in solidarity with marginalized members of society to translate evidence into policies, programs, and practice for genuine nation-building.',
     photo: {
-      src: '/images/core-values/5-social-responsibility.jpg',
-      alt: 'Photo for the core value: Social Responsibility and Solidarity with the Marginalized',
+      src: '/images/value-5.webp',
+      alt: 'Three PAMMRES members, including a religious sister, warmly clasping hands',
       brief: 'community or LGU engagement, outreach, 3:2',
     },
   },
