@@ -13,6 +13,7 @@ import { MemberPhotos } from './collections/MemberPhotos'
 import { Members } from './collections/Members'
 import { News } from './collections/News'
 import { Officers } from './collections/Officers'
+import { PaymentReceipts } from './collections/PaymentReceipts'
 import { Partners } from './collections/Partners'
 import { ThemeGroups } from './collections/ThemeGroups'
 import { SiteSettings } from './globals/SiteSettings'
@@ -51,6 +52,7 @@ export default buildConfig({
     ContactMessages,
     Media,
     MemberPhotos,
+    PaymentReceipts,
     Users,
   ],
   globals: [SiteSettings],

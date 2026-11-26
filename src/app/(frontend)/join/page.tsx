@@ -84,7 +84,7 @@ export default async function JoinPage() {
             </li>
           </ol>
           <h3 className="mt-8 text-sm font-semibold tracking-[0.12em] text-crimson uppercase">
-            Membership fees
+            Annual membership fees
           </h3>
           <dl className="mt-3 divide-y divide-rule">
             {membershipCategories.map((c) => (

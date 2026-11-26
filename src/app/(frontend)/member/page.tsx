@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 
 import { MEMBER_STEPS, researchDesigns, researchInterestOptions } from '@/collections/Members'
-import { membershipCategories, membershipFees } from '@/collections/membership'
+import { membershipCategories, membershipFees, membershipStanding } from '@/collections/membership'
 import type { Member } from '@/payload-types'
 
 import { CheckIcon } from '../components/icons'
@@ -13,19 +13,35 @@ import { Placeholder } from '../components/Placeholder'
 import { button, textLink } from '../components/ui'
 import { requireMember } from '../data/member'
 import { logOut } from './actions'
+import { ReceiptPreview } from './ReceiptPreview'
 import { profileSteps } from './steps'
 
 export const metadata: Metadata = { title: 'My account', robots: { index: false } }
 
-type Props = { searchParams: Promise<{ submitted?: string }> }
+type Props = { searchParams: Promise<{ submitted?: string; renewed?: string }> }
 
 const labelOf = (opts: readonly { label: string; value: string }[], v?: string | null) =>
   opts.find((o) => o.value === v)?.label ?? null
 
 const dateFmt = new Intl.DateTimeFormat('en-PH', { dateStyle: 'long', timeZone: 'Asia/Manila' })
 
-function StatusBanner({ member, justSubmitted }: { member: Member; justSubmitted: boolean }) {
+function StatusBanner({
+  member,
+  justSubmitted,
+  justRenewed,
+}: {
+  member: Member
+  justSubmitted: boolean
+  justRenewed: boolean
+}) {
   const done = member.completedSteps ?? 0
+  const { standing, expires, canRenew } = membershipStanding(member)
+  const until = expires ? dateFmt.format(expires) : null
+  const renewButton = canRenew && (
+    <Link href="/member/renew" className={`${button('primary', 'md')} mt-4`}>
+      Renew membership
+    </Link>
+  )
   const nextStep = Math.min(done + 1, MEMBER_STEPS)
 
   const banners: Record<Member['status'], { tone: string; title: string; body: React.ReactNode }> = {
@@ -55,10 +71,49 @@ function StatusBanner({ member, justSubmitted }: { member: Member; justSubmitted
       title: 'Payment verified',
       body: 'Your payment has been confirmed. The secretariat will approve your membership shortly.',
     },
-    approved: {
-      tone: 'border-gold bg-gold-soft/30',
-      title: 'You’re a PAMMRES member',
-      body: member.memberSince ? `Member since ${dateFmt.format(new Date(member.memberSince))}.` : 'Welcome to PAMMRES.',
+    approved:
+      standing === 'expired'
+        ? {
+            tone: 'border-error/40 bg-error/5',
+            title: 'Your membership has expired',
+            body: (
+              <>
+                <p>
+                  It expired on {until}. Renew to keep your membership and access to member
+                  resources.
+                </p>
+                {renewButton}
+              </>
+            ),
+          }
+        : standing === 'expiring'
+          ? {
+              tone: 'border-gold bg-cream',
+              title: 'Time to renew your membership',
+              body: (
+                <>
+                  <p>Your membership runs until {until}. Renew now to keep it going for another year.</p>
+                  {renewButton}
+                </>
+              ),
+            }
+          : {
+              tone: 'border-gold bg-gold-soft/30',
+              title: 'You’re a PAMMRES member',
+              body: [
+                member.memberSince && `Member since ${dateFmt.format(new Date(member.memberSince))}.`,
+                until && `Your membership runs until ${until}.`,
+              ]
+                .filter(Boolean)
+                .join(' '),
+            },
+    'renewal-pending': {
+      tone: 'border-navy/30 bg-navy/5',
+      title: justRenewed ? 'Thank you! Your renewal was sent' : 'Your renewal is being reviewed',
+      body:
+        standing === 'expired'
+          ? 'The secretariat is checking your payment. Your membership will be active again once it’s approved.'
+          : `The secretariat is checking your payment. Your current membership runs until ${until}; approval adds another year.`,
     },
     declined: {
       tone: 'border-error/40 bg-error/5',
@@ -91,7 +146,7 @@ function StatusBanner({ member, justSubmitted }: { member: Member; justSubmitted
   )
 }
 
-function Summary({ member }: { member: Member }) {
+function Summary({ member, expires }: { member: Member; expires: Date | null }) {
   const research = (g: Member['publishedResearch']) =>
     g?.title
       ? [g.title, g.year, g.publisher, labelOf(researchDesigns, g.design)].filter(Boolean).join(' · ')
@@ -116,6 +171,19 @@ function Summary({ member }: { member: Member }) {
         : null,
     ],
     ['Payment reference', member.paymentReference],
+    [
+      'Payment receipt',
+      typeof member.paymentReceipt === 'object' && member.paymentReceipt?.url ? (
+        <div className="max-w-sm">
+          <ReceiptPreview
+            url={member.paymentReceipt.url}
+            mimeType={member.paymentReceipt.mimeType}
+            label="Your payment receipt"
+          />
+        </div>
+      ) : null,
+    ],
+    ['Membership valid until', expires ? dateFmt.format(expires) : null],
   ]
   return (
     <dl className="divide-y divide-rule rounded-xl border border-rule bg-white">
@@ -131,7 +199,12 @@ function Summary({ member }: { member: Member }) {
 
 export default async function MemberPage({ searchParams }: Props) {
   const member = await requireMember('/member')
-  const justSubmitted = (await searchParams).submitted === '1'
+  const params = await searchParams
+  const justSubmitted = params.submitted === '1'
+  const justRenewed = params.renewed === '1'
+  const { standing, expires } = membershipStanding(member)
+  // Member resources need a membership that is approved and not yet expired.
+  const active = (member.status === 'approved' || member.status === 'renewal-pending') && (standing === 'active' || standing === 'expiring')
   const done = member.completedSteps ?? 0
   const photoUrl = typeof member.photo === 'object' ? member.photo?.url : null
 
@@ -144,7 +217,7 @@ export default async function MemberPage({ searchParams }: Props) {
       />
 
       <div className="mx-auto max-w-[1080px] space-y-14 px-4 py-12 md:px-6 md:py-16">
-        <StatusBanner member={member} justSubmitted={justSubmitted} />
+        <StatusBanner member={member} justSubmitted={justSubmitted} justRenewed={justRenewed} />
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           {/* Steps checklist */}
@@ -198,7 +271,7 @@ export default async function MemberPage({ searchParams }: Props) {
               </h2>
             </div>
             <div className="mt-5">
-              <Summary member={member} />
+              <Summary member={member} expires={expires} />
             </div>
           </section>
         </div>
@@ -208,7 +281,7 @@ export default async function MemberPage({ searchParams }: Props) {
           <h2 id="resources-title" className="font-display text-2xl font-semibold text-navy">
             Member resources
           </h2>
-          {member.status === 'approved' ? (
+          {active ? (
             <ul className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {['Webinar recordings', 'Slide decks', 'Joint display guides', 'Methodological toolkits'].map((item) => (
                 <li key={item} className="flex items-center justify-between gap-4 rounded-xl border border-rule bg-white px-5 py-4">
@@ -219,8 +292,9 @@ export default async function MemberPage({ searchParams }: Props) {
             </ul>
           ) : (
             <p className="mt-3 text-base text-ink-muted">
-              Recordings, slides, joint display guides and toolkits open up here once your
-              membership is approved.
+              {standing === 'expired'
+                ? 'Recordings, slides, joint display guides and toolkits open up again once your renewal is approved.'
+                : 'Recordings, slides, joint display guides and toolkits open up here once your membership is approved.'}
             </p>
           )}
         </section>

@@ -1,7 +1,7 @@
 import type { CollectionConfig, Field } from 'payload'
 
 import { authenticated, authenticatedField, editorOrSelf } from '../access'
-import { membershipCategories, paymentMethods } from './membership'
+import { membershipCategories, nextExpiry, paymentMethods } from './membership'
 
 /*
  * PAMMRES members: site accounts (sign in at /login, never /admin) holding the
@@ -30,6 +30,7 @@ export const memberStatuses = [
   { label: 'Pending review', value: 'pending' },
   { label: 'Payment verified', value: 'payment-verified' },
   { label: 'Approved', value: 'approved' },
+  { label: 'Renewal pending', value: 'renewal-pending' },
   { label: 'Declined', value: 'declined' },
 ] as const
 
@@ -67,9 +68,9 @@ export const Members: CollectionConfig = {
   labels: { singular: 'Member', plural: 'Members' },
   admin: {
     useAsTitle: 'fullName',
-    defaultColumns: ['fullName', 'email', 'category', 'status', 'createdAt'],
+    defaultColumns: ['fullName', 'email', 'category', 'status', 'membershipExpires', 'createdAt'],
     description:
-      'Member accounts from the website. Check the payment reference, then set the status to Approved or Declined. To reset a forgotten password, open the member and use "Change password".',
+      'Member accounts from the website. Check the payment receipt and reference, then set the status to Approved or Declined. Approving starts the membership year; approving a "Renewal pending" member extends it by a year. To reset a forgotten password, open the member and use "Change password".',
   },
   auth: {
     tokenExpiration: 60 * 60 * 24 * 7, // 7 days
@@ -98,8 +99,17 @@ export const Members: CollectionConfig = {
         const middle = data.middleName ?? originalDoc?.middleName ?? ''
         const last = data.lastName ?? originalDoc?.lastName ?? ''
         data.fullName = [first, middle, last].filter(Boolean).join(' ')
-        if (data.status === 'approved' && originalDoc?.status !== 'approved' && !data.memberSince) {
-          data.memberSince = new Date().toISOString()
+        // Approving (a new application or a renewal) starts or extends the year.
+        const becameApproved = data.status === 'approved' && originalDoc?.status !== 'approved'
+        if (becameApproved) {
+          if (!originalDoc?.memberSince && !data.memberSince) data.memberSince = new Date().toISOString()
+          // Unless the editor set the expiry by hand in this same save
+          const editedExpiry =
+            data.membershipExpires !== undefined &&
+            data.membershipExpires !== (originalDoc?.membershipExpires ?? null)
+          if (!editedExpiry) {
+            data.membershipExpires = nextExpiry(originalDoc?.membershipExpires).toISOString()
+          }
         }
         return data
       },
@@ -190,6 +200,15 @@ export const Members: CollectionConfig = {
           ],
         },
         {
+          name: 'paymentReceipt',
+          label: 'Latest payment receipt',
+          type: 'upload',
+          relationTo: 'payment-receipts',
+          // Set by the server actions only, so a member can't point it at another file
+          access: editorOnly,
+          admin: { description: 'All of this member’s receipts are under Payment Receipts.' },
+        },
+        {
           name: 'privacyConsent',
           label: 'Consented to data processing (Data Privacy Act of 2012)',
           type: 'checkbox',
@@ -212,6 +231,16 @@ export const Members: CollectionConfig = {
       type: 'date',
       access: editorOnly,
       admin: { position: 'sidebar', description: 'Set automatically when approved.' },
+    },
+    {
+      name: 'membershipExpires',
+      type: 'date',
+      index: true,
+      access: editorOnly,
+      admin: {
+        position: 'sidebar',
+        description: 'Set automatically to one year after approval; renewals add a year. You can adjust it by hand.',
+      },
     },
     {
       name: 'completedSteps',

@@ -43,6 +43,7 @@ next-env.d.ts
 
 /media
 /member-photos
+/payment-receipts
 
 # Playwright
 node_modules/

@@ -10,8 +10,9 @@ const nextConfig: NextConfig = {
   // Optional separate output folder, e.g. to build while `pnpm dev` is using .next
   distDir: process.env.NEXT_DIST_DIR || '.next',
   experimental: {
-    // Member profile step 3 uploads a 2x2 photo (up to 2 MB) through a server action.
-    serverActions: { bodySizeLimit: '3mb' },
+    // Member forms upload a 2x2 photo (up to 2 MB) or a payment receipt (up to 5 MB)
+    // through server actions.
+    serverActions: { bodySizeLimit: '6mb' },
   },
   // Security headers on every response. Framing is limited to this site (clickjacking on
   // /login, /join, /admin); SAMEORIGIN keeps any of Payload's own admin frames working.

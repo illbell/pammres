@@ -6,5 +6,8 @@ export const profileSteps = [
     title: 'Unpublished research & interests',
     summary: 'Unpublished work, research interests, experience and your 2x2 photo.',
   },
-  { title: 'Category & payment', summary: 'Choose your category and enter your payment reference.' },
+  {
+    title: 'Category & payment',
+    summary: 'Choose your category, then enter your payment reference and upload the receipt.',
+  },
 ] as const

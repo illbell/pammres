@@ -7,13 +7,14 @@ import { createLocalReq, getPayload, logoutOperation, type Payload } from 'paylo
 import sharp from 'sharp'
 
 import { MEMBER_PHOTO_MAX_BYTES } from '@/collections/MemberPhotos'
+import { RECEIPT_MAX_BYTES } from '@/collections/PaymentReceipts'
 import { allowRequest, HOUR } from '@/lib/rateLimit'
 import {
   MEMBER_STEPS,
   researchDesigns,
   researchInterestOptions,
 } from '@/collections/Members'
-import { membershipCategories, paymentMethods } from '@/collections/membership'
+import { membershipCategories, membershipStanding, paymentMethods } from '@/collections/membership'
 import type { Member } from '@/payload-types'
 
 import { AUTH_COOKIE, getCurrentMember, safeNext } from '../data/member'
@@ -195,6 +196,76 @@ export async function logOut() {
   redirect('/')
 }
 
+/* ------------------------------------ Payment receipts ------------------------------------ */
+
+type Receipt = { data: Buffer; mimetype: string; ext: 'jpg' | 'pdf' }
+const RECEIPT_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+
+/**
+ * Reads and checks the "receipt" file from a form. Images are re-encoded (proves
+ * they're real images and strips metadata); PDFs must start with the PDF signature.
+ * Returns null when no file was chosen; sets errors.receipt when it's unusable.
+ */
+async function readReceipt(fd: FormData, errors: Record<string, string>): Promise<Receipt | null> {
+  const file = fd.get('receipt')
+  if (!(file instanceof File) || file.size === 0) return null
+  if (file.size > RECEIPT_MAX_BYTES) {
+    errors.receipt = 'Use a file of 5 MB or less.'
+    return null
+  }
+  const bytes = Buffer.from(await file.arrayBuffer())
+  if (file.type === 'application/pdf') {
+    if (bytes.subarray(0, 5).toString('latin1') !== '%PDF-') {
+      errors.receipt = 'That file isn’t a readable PDF.'
+      return null
+    }
+    return { data: bytes, mimetype: 'application/pdf', ext: 'pdf' }
+  }
+  if (!RECEIPT_IMAGE_TYPES.includes(file.type)) {
+    errors.receipt = 'Upload a photo or screenshot (JPG, PNG, WebP) or a PDF.'
+    return null
+  }
+  try {
+    const data = await sharp(bytes, { limitInputPixels: 40_000_000 })
+      .rotate()
+      .resize(2000, 2000, { fit: 'inside', withoutEnlargement: true })
+      .jpeg({ quality: 85, mozjpeg: true })
+      .toBuffer()
+    return { data, mimetype: 'image/jpeg', ext: 'jpg' }
+  } catch {
+    errors.receipt = 'That file isn’t a readable image. Try a JPG, PNG or PDF.'
+    return null
+  }
+}
+
+/** Saves a receipt to the private payment-receipts collection and returns its id. */
+async function storeReceipt(
+  payload: Payload,
+  member: Member,
+  receipt: Receipt,
+  meta: { purpose: 'application' | 'renewal'; category: string; paymentMethod: string; reference: string },
+) {
+  const doc = await payload.create({
+    collection: 'payment-receipts',
+    data: {
+      owner: member.id,
+      purpose: meta.purpose,
+      category: meta.category as Member['category'],
+      paymentMethod: meta.paymentMethod as Member['paymentMethod'],
+      reference: meta.reference,
+    },
+    file: {
+      data: receipt.data,
+      mimetype: receipt.mimetype,
+      // Our own name, never the uploader's
+      name: `receipt-${member.id}-${Date.now()}.${receipt.ext}`,
+      size: receipt.data.length,
+    },
+    overrideAccess: true,
+  })
+  return doc.id
+}
+
 /* ------------------------------------ Profile steps ------------------------------------ */
 
 const DESIGNS = valuesOf(researchDesigns)
@@ -254,6 +325,7 @@ export async function saveProfileStep(
   let values: Record<string, string | string[]> = {}
   let data: Partial<Member> = {}
   let photo: Buffer | null = null
+  let receipt: Receipt | null = null
 
   if (step === 1) {
     const v = {
@@ -340,6 +412,10 @@ export async function saveProfileStep(
     if (!v.paymentReference)
       errors.paymentReference = 'Enter the reference number from your payment receipt.'
     tooLong(errors, v, { paymentReference: 100 })
+    receipt = await readReceipt(fd, errors)
+    // Required the first time; afterwards a new file replaces the old one.
+    if (!receipt && !errors.receipt && !member.paymentReceipt)
+      errors.receipt = 'Upload your payment receipt (a photo, screenshot or PDF).'
     data = {
       category: v.category as Member['category'],
       paymentMethod: v.paymentMethod as Member['paymentMethod'],
@@ -374,6 +450,15 @@ export async function saveProfileStep(
       }
     }
 
+    if (receipt) {
+      data.paymentReceipt = await storeReceipt(payload, member, receipt, {
+        purpose: 'application',
+        category: String(data.category),
+        paymentMethod: String(data.paymentMethod),
+        reference: String(data.paymentReference),
+      })
+    }
+
     // Trusted write of this step's validated fields only, for this member only.
     await payload.update({
       collection: 'members',
@@ -398,4 +483,57 @@ export async function saveProfileStep(
   }
 
   redirect(step < MEMBER_STEPS ? `/member/apply/${step + 1}` : '/member?submitted=1')
+}
+
+/* ------------------------------------ Renewal ------------------------------------ */
+
+/**
+ * Annual renewal: an approved member whose membership is expiring or has
+ * expired pays again, uploads the receipt and waits for the secretariat.
+ */
+export async function renewMembership(
+  _prev: MemberFormState,
+  fd: FormData,
+): Promise<MemberFormState> {
+  const member = await getCurrentMember()
+  if (!member) redirect(`/login?next=${encodeURIComponent('/member/renew')}`)
+  if (!membershipStanding(member).canRenew) redirect('/member')
+
+  const v = {
+    category: text(fd, 'category'),
+    paymentMethod: text(fd, 'paymentMethod'),
+    paymentReference: text(fd, 'paymentReference'),
+  }
+  const errors: Record<string, string> = {}
+  if (!CATEGORIES.includes(v.category)) errors.category = 'Choose a membership category.'
+  if (!PAID_METHODS.includes(v.paymentMethod)) errors.paymentMethod = 'Choose how you paid.'
+  if (!v.paymentReference)
+    errors.paymentReference = 'Enter the reference number from your payment receipt.'
+  tooLong(errors, v, { paymentReference: 100 })
+  const receipt = await readReceipt(fd, errors)
+  if (!receipt && !errors.receipt)
+    errors.receipt = 'Upload your payment receipt (a photo, screenshot or PDF).'
+  if (Object.keys(errors).length || !receipt) return fail(errors, v)
+
+  try {
+    const payload = await client()
+    const receiptId = await storeReceipt(payload, member, receipt, { purpose: 'renewal', ...v, reference: v.paymentReference })
+    await payload.update({
+      collection: 'members',
+      id: member.id,
+      data: {
+        category: v.category as Member['category'],
+        paymentMethod: v.paymentMethod as Member['paymentMethod'],
+        paymentReference: v.paymentReference,
+        paymentReceipt: receiptId,
+        status: 'renewal-pending',
+      },
+      overrideAccess: true,
+    })
+  } catch (error) {
+    console.error('[member] Renewal failed', error)
+    return fail({}, v, 'Your renewal couldn’t be sent because of a problem on our side. Try again in a few minutes.')
+  }
+
+  redirect('/member?renewed=1')
 }

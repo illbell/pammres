@@ -77,6 +77,7 @@ export interface Config {
     'contact-messages': ContactMessage;
     media: Media;
     'member-photos': MemberPhoto;
+    'payment-receipts': PaymentReceipt;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -94,6 +95,7 @@ export interface Config {
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'member-photos': MemberPhotosSelect<false> | MemberPhotosSelect<true>;
+    'payment-receipts': PaymentReceiptsSelect<false> | PaymentReceiptsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -349,7 +351,7 @@ export interface Partner {
   createdAt: string;
 }
 /**
- * Member accounts from the website. Check the payment reference, then set the status to Approved or Declined. To reset a forgotten password, open the member and use "Change password".
+ * Member accounts from the website. Check the payment receipt and reference, then set the status to Approved or Declined. Approving starts the membership year; approving a "Renewal pending" member extends it by a year. To reset a forgotten password, open the member and use "Change password".
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "members".
@@ -382,12 +384,20 @@ export interface Member {
   category?: ('regular' | 'student' | 'institutional') | null;
   paymentMethod?: ('bank-transfer' | 'gcash' | 'not-yet') | null;
   paymentReference?: string | null;
+  /**
+   * All of this member’s receipts are under Payment Receipts.
+   */
+  paymentReceipt?: (string | null) | PaymentReceipt;
   privacyConsent?: boolean | null;
-  status: 'incomplete' | 'pending' | 'payment-verified' | 'approved' | 'declined';
+  status: 'incomplete' | 'pending' | 'payment-verified' | 'approved' | 'renewal-pending' | 'declined';
   /**
    * Set automatically when approved.
    */
   memberSince?: string | null;
+  /**
+   * Set automatically to one year after approval; renewals add a year. You can adjust it by hand.
+   */
+  membershipExpires?: string | null;
   /**
    * Profile steps done (of 4).
    */
@@ -423,6 +433,31 @@ export interface Member {
 export interface MemberPhoto {
   id: string;
   owner: string | Member;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * Receipts uploaded by members. Open one to check it against the payment reference.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-receipts".
+ */
+export interface PaymentReceipt {
+  id: string;
+  owner: string | Member;
+  purpose: 'application' | 'renewal';
+  category?: ('regular' | 'student' | 'institutional') | null;
+  paymentMethod?: ('bank-transfer' | 'gcash' | 'not-yet') | null;
+  reference?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -537,6 +572,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'member-photos';
         value: string | MemberPhoto;
+      } | null)
+    | ({
+        relationTo: 'payment-receipts';
+        value: string | PaymentReceipt;
       } | null)
     | ({
         relationTo: 'users';
@@ -713,9 +752,11 @@ export interface MembersSelect<T extends boolean = true> {
   category?: T;
   paymentMethod?: T;
   paymentReference?: T;
+  paymentReceipt?: T;
   privacyConsent?: T;
   status?: T;
   memberSince?: T;
+  membershipExpires?: T;
   completedSteps?: T;
   internalNotes?: T;
   updatedAt?: T;
@@ -774,6 +815,28 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface MemberPhotosSelect<T extends boolean = true> {
   owner?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-receipts_select".
+ */
+export interface PaymentReceiptsSelect<T extends boolean = true> {
+  owner?: T;
+  purpose?: T;
+  category?: T;
+  paymentMethod?: T;
+  reference?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

@@ -73,14 +73,14 @@ const steps = [
     title: 'Pay the membership fee',
     body: (
       <>
-        Pay by bank transfer or GCash, then enter the reference number from your receipt.{' '}
+        Pay by bank transfer or GCash, then enter the reference number and upload your receipt.{' '}
         <Placeholder>account name and number</Placeholder>
       </>
     ),
   },
   {
     title: 'Wait for approval',
-    body: 'The secretariat verifies your profile and payment. Log in any time to see your status.',
+    body: 'The secretariat verifies your profile and payment. Membership runs for one year from approval, and you can renew online from your account.',
   },
 ]
 
@@ -131,7 +131,7 @@ export default function MembershipPage() {
                 <Card className="w-full" eyebrow={c.group} title={c.title} accent={c.accent}>
                   <dl className="space-y-2">
                     <div>
-                      <dt className="text-sm font-semibold text-navy">Membership fee</dt>
+                      <dt className="text-sm font-semibold text-navy">Annual fee</dt>
                       <dd className="font-display text-3xl font-semibold text-crimson">
                         {peso.format(c.fee)}
                       </dd>

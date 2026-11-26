@@ -103,11 +103,11 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 ## CMS content
 
 - **Editable in the admin (`/admin`):**
-  - collections: Officers, Theme Groups, Events, News, Partners, Members, Member Photos, Contact Messages
+  - collections: Officers, Theme Groups, Events, News, Partners, Members, Member Photos, Payment Receipts, Contact Messages
   - global: Site Settings (announcement, email, Facebook, address)
 - **Pages read content** through the loaders in `src/app/(frontend)/data/cms.ts`, never by calling Payload directly from components. The loaders fall back to `src/app/(frontend)/content/*` when the database is down.
 - **Two kinds of account:** editors (`users`, sign in at `/admin`) and members (`members`, sign in at `/login`). Access must check for an editor (`authenticated`/`isEditor` in `src/access/`), never just "someone is signed in". Give every new collection explicit `read/create/update/delete` (and `readVersions` if drafts) so Payload's "any signed-in user" default never applies.
-- **Member flow:** `/join` → `/member/apply/1..4` → secretariat approves (Members → status). Server actions live in `src/app/(frontend)/member/actions.ts`, and the session helpers (`getCurrentMember`, `requireMember`) in `data/member.ts`. The header checks `/api/members/me` in the browser so pages stay static.
+- **Member flow:** `/join` → `/member/apply/1..4` (step 4 uploads the payment receipt) → secretariat approves (Members → status), which sets a one-year expiry. Members renew at `/member/renew` from 30 days before expiry; approving a renewal adds a year. The expiry rules are in `src/collections/membership.ts`. Server actions live in `src/app/(frontend)/member/actions.ts`, and the session helpers (`getCurrentMember`, `requireMember`) in `data/member.ts`. The header checks `/api/members/me` in the browser so pages stay static.
 - **New collections:**
   - use the access helpers in `src/access/`
   - use `revalidatePages([...])` from `src/hooks/revalidate.ts`

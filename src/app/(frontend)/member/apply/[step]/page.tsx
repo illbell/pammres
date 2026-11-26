@@ -53,6 +53,11 @@ export default async function ProfileStepPage({ params }: Props) {
     paymentReference: member.paymentReference,
   }
   const photoUrl = typeof member.photo === 'object' ? member.photo?.url : null
+  const receiptDoc = typeof member.paymentReceipt === 'object' ? member.paymentReceipt : null
+  const receipt =
+    receiptDoc?.url && receiptDoc.filename
+      ? { url: receiptDoc.url, filename: receiptDoc.filename, mimeType: receiptDoc.mimeType }
+      : null
   const submitted = member.status !== 'incomplete'
   const isLast = step === MEMBER_STEPS
 
@@ -96,7 +101,7 @@ export default async function ProfileStepPage({ params }: Props) {
         {isLast && (
           <div className="mb-8 rounded-xl border border-gold/60 bg-cream px-5 py-4 text-base text-ink">
             Pay the fee for your category by bank transfer or GCash first, then enter the reference
-            number from your receipt below. {/* TODO(needs client): bank and GCash account details */}
+            number and upload your receipt below. {/* TODO(needs client): bank and GCash account details */}
             <Placeholder>account name and number</Placeholder>
           </div>
         )}
@@ -107,6 +112,7 @@ export default async function ProfileStepPage({ params }: Props) {
           defaults={defaults}
           email={member.email}
           photoUrl={photoUrl}
+          receipt={receipt}
           submitLabel={isLast ? (submitted ? 'Save changes' : 'Submit for review') : 'Save & continue'}
           options={{
             designs: [...researchDesigns],

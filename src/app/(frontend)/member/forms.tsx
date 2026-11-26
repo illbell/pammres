@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import React, { useActionState, useEffect, useRef } from 'react'
+import React, { useActionState, useEffect, useRef, useState } from 'react'
 
 import {
   Field,
@@ -14,7 +14,8 @@ import {
   inputClass,
 } from '../components/form'
 import { textLink } from '../components/ui'
-import { logIn, saveProfileStep, signUp, type MemberFormState } from './actions'
+import { ReceiptPreview } from './ReceiptPreview'
+import { logIn, renewMembership, saveProfileStep, signUp, type MemberFormState } from './actions'
 
 const initial: MemberFormState = { status: 'idle' }
 
@@ -214,6 +215,162 @@ function ResearchFields({
   )
 }
 
+type PaymentOptions = { categories: (Option & { fee: string })[]; payments: Option[] }
+
+/** Receipt already on file: a link for the member to check it. */
+export type ReceiptOnFile = { url: string; filename: string; mimeType?: string | null } | null
+
+/**
+ * Receipt file input with a live preview of the chosen file (before upload),
+ * and a preview of the receipt already on file.
+ */
+function ReceiptInput({
+  existing,
+  a11y,
+}: {
+  existing: ReceiptOnFile
+  a11y: ReturnType<typeof errorProps>
+}) {
+  const [chosen, setChosen] = useState<{ url: string; type: string; name: string } | null>(null)
+
+  // Free the temporary preview URL when it's replaced or the form goes away.
+  useEffect(() => () => {
+    if (chosen) URL.revokeObjectURL(chosen.url)
+  }, [chosen])
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    setChosen(file ? { url: URL.createObjectURL(file), type: file.type, name: file.name } : null)
+  }
+
+  return (
+    <div className="space-y-4">
+      {chosen ? (
+        <div>
+          <p className="mb-2 text-sm font-semibold text-navy">
+            Preview: {chosen.name} <span className="font-normal text-ink-muted">(not sent yet)</span>
+          </p>
+          <ReceiptPreview url={chosen.url} mimeType={chosen.type} label={`Preview of ${chosen.name}`} openLink={false} />
+        </div>
+      ) : (
+        existing && (
+          <div>
+            <p className="mb-2 text-sm font-semibold text-navy">Receipt on file</p>
+            <ReceiptPreview url={existing.url} mimeType={existing.mimeType} label="Your payment receipt on file" />
+          </div>
+        )
+      )}
+      <input
+        id="receipt"
+        name="receipt"
+        type="file"
+        accept="image/jpeg,image/png,image/webp,application/pdf"
+        onChange={onChange}
+        className={`block text-base text-ink file:mr-4 file:rounded-full file:border-0 file:bg-navy file:px-5 file:py-2.5 file:font-semibold file:text-white hover:file:bg-navy-soft ${formFocusRing}`}
+        {...a11y}
+      />
+    </div>
+  )
+}
+
+/** Category, payment method, reference and receipt upload (profile step 4 and renewal). */
+function PaymentFields({
+  form,
+  defaults,
+  options,
+  receipt,
+}: {
+  form: ReturnType<typeof useMemberForm>
+  defaults: StepDefaults
+  options: PaymentOptions
+  receipt: ReceiptOnFile
+}) {
+  const { errors, a11y, val } = form
+  const d = (f: string) => defaults[f] as string | number | null | undefined
+  return (
+    <div className="space-y-6">
+          <fieldset aria-describedby={errors.category ? 'category-error' : undefined}>
+            <legend className="text-base font-semibold text-navy">Membership category</legend>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              {options.categories.map((o) => (
+                <label key={o.value} className="flex cursor-pointer flex-col gap-1 rounded-xl border border-rule px-4 py-4 text-base text-ink has-checked:border-crimson has-checked:bg-cream">
+                  <span className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="category"
+                      value={o.value}
+                      defaultChecked={val('category', d('category')) === o.value}
+                      className={`size-5 shrink-0 accent-crimson ${formFocusRing}`}
+                    />
+                    <span className="font-semibold text-navy">{o.label}</span>
+                  </span>
+                  <span className="pl-8 font-display text-2xl font-semibold text-crimson">{o.fee}</span>
+                </label>
+              ))}
+            </div>
+            {errors.category && (
+              <p id="category-error" className="mt-2 text-base text-error">
+                {errors.category}
+              </p>
+            )}
+          </fieldset>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <Field name="paymentMethod" label="How did you pay?" error={errors.paymentMethod}>
+              <Select key={val('paymentMethod', d('paymentMethod'))} id="paymentMethod" name="paymentMethod" defaultValue={val('paymentMethod', d('paymentMethod'))} {...a11y('paymentMethod')}>
+                <option value="">Choose…</option>
+                {options.payments.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field name="paymentReference" label="Payment reference no." error={errors.paymentReference} hint="From your GCash or bank receipt.">
+              <TextInput name="paymentReference" defaultValue={val('paymentReference', d('paymentReference'))} a11y={a11y('paymentReference')} />
+            </Field>
+          </div>
+              <Field
+        name="receipt"
+        label="Payment receipt"
+        optional={Boolean(receipt)}
+        hint={
+          receipt
+            ? 'Upload a new file only if you want to replace the one on file.'
+            : 'A photo or screenshot of your GCash or bank receipt (JPG, PNG, WebP) or a PDF, up to 5 MB. Only you and the secretariat can see it.'
+        }
+        error={errors.receipt}
+      >
+        <ReceiptInput existing={receipt} a11y={a11y('receipt')} />
+      </Field>
+    </div>
+  )
+}
+
+/* ------------------------------------ Renewal ------------------------------------ */
+
+export function RenewForm({
+  defaults,
+  options,
+}: {
+  defaults: StepDefaults
+  options: PaymentOptions
+}) {
+  const form = useMemberForm(renewMembership)
+  const { state, formAction, formRef } = form
+  return (
+    <form ref={formRef} action={formAction} noValidate className="space-y-8">
+      <FormAlert message={state.message} />
+      <PaymentFields form={form} defaults={defaults} options={options} receipt={null} />
+      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-rule pt-6">
+        <Link href="/member" className={textLink}>
+          ← My account
+        </Link>
+        <SubmitButton label="Send renewal" pendingLabel="Sending…" />
+      </div>
+    </form>
+  )
+}
+
 export function ProfileStepForm({
   step,
   totalSteps,
@@ -222,6 +379,7 @@ export function ProfileStepForm({
   options,
   submitLabel,
   photoUrl,
+  receipt = null,
 }: {
   step: number
   totalSteps: number
@@ -230,6 +388,7 @@ export function ProfileStepForm({
   options: { designs: Option[]; interests: Option[]; categories: (Option & { fee: string })[]; payments: Option[] }
   submitLabel: string
   photoUrl?: string | null
+  receipt?: ReceiptOnFile
 }) {
   const form = useMemberForm(saveProfileStep)
   const { state, formAction, formRef, errors, a11y, val } = form
@@ -358,48 +517,7 @@ export function ProfileStepForm({
       )}
 
       {step === 4 && (
-        <div className="space-y-6">
-          <fieldset aria-describedby={errors.category ? 'category-error' : undefined}>
-            <legend className="text-base font-semibold text-navy">Membership category</legend>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              {options.categories.map((o) => (
-                <label key={o.value} className="flex cursor-pointer flex-col gap-1 rounded-xl border border-rule px-4 py-4 text-base text-ink has-checked:border-crimson has-checked:bg-cream">
-                  <span className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="category"
-                      value={o.value}
-                      defaultChecked={val('category', d('category')) === o.value}
-                      className={`size-5 shrink-0 accent-crimson ${formFocusRing}`}
-                    />
-                    <span className="font-semibold text-navy">{o.label}</span>
-                  </span>
-                  <span className="pl-8 font-display text-2xl font-semibold text-crimson">{o.fee}</span>
-                </label>
-              ))}
-            </div>
-            {errors.category && (
-              <p id="category-error" className="mt-2 text-base text-error">
-                {errors.category}
-              </p>
-            )}
-          </fieldset>
-          <div className="grid gap-6 sm:grid-cols-2">
-            <Field name="paymentMethod" label="How did you pay?" error={errors.paymentMethod}>
-              <Select key={val('paymentMethod', d('paymentMethod'))} id="paymentMethod" name="paymentMethod" defaultValue={val('paymentMethod', d('paymentMethod'))} {...a11y('paymentMethod')}>
-                <option value="">Choose…</option>
-                {options.payments.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field name="paymentReference" label="Payment reference no." error={errors.paymentReference} hint="From your GCash or bank receipt.">
-              <TextInput name="paymentReference" defaultValue={val('paymentReference', d('paymentReference'))} a11y={a11y('paymentReference')} />
-            </Field>
-          </div>
-        </div>
+        <PaymentFields form={form} defaults={defaults} options={options} receipt={receipt} />
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-4 border-t border-rule pt-6">

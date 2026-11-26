@@ -6,6 +6,7 @@ import config from '@/payload.config'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 import { safeNext } from '@/app/(frontend)/data/member'
+import { addOneYear, membershipStanding, nextExpiry } from '@/collections/membership'
 import { signUp } from '@/app/(frontend)/member/actions'
 import type { Member } from '@/payload-types'
 
@@ -195,7 +196,8 @@ describe('member accounts', () => {
     expect(safeNext('/resources?x=1#top')).toBe('/resources?x=1#top')
   })
 
-  it('sets memberSince when an editor approves a member', async () => {
+  it('starts a one-year membership when an editor approves a member', async () => {
+    const before = Date.now()
     const approved = await payload.update({
       collection: 'members',
       id: memberB.id,
@@ -203,5 +205,61 @@ describe('member accounts', () => {
       overrideAccess: true,
     })
     expect(approved.memberSince).toBeTruthy()
+    const expires = new Date(approved.membershipExpires!).getTime()
+    const year = 365 * 86_400_000
+    expect(expires - before).toBeGreaterThan(year - 2 * 86_400_000)
+    expect(expires - before).toBeLessThan(year + 2 * 86_400_000)
+  })
+
+  it('extends an unexpired membership by a year when a renewal is approved', async () => {
+    const current = await payload.findByID({ collection: 'members', id: memberB.id, overrideAccess: true })
+    const oldExpiry = current.membershipExpires!
+    const oldSince = current.memberSince
+    await payload.update({ collection: 'members', id: memberB.id, data: { status: 'renewal-pending' }, overrideAccess: true })
+    const renewed = await payload.update({
+      collection: 'members',
+      id: memberB.id,
+      data: { status: 'approved' },
+      overrideAccess: true,
+    })
+    expect(renewed.membershipExpires).toBe(addOneYear(new Date(oldExpiry)).toISOString())
+    expect(renewed.memberSince).toBe(oldSince)
+  })
+
+  it('never lets a member change their own expiry or receipt link', async () => {
+    await payload.update({
+      collection: 'members',
+      id: memberA.id,
+      data: { membershipExpires: '2099-01-01T00:00:00.000Z' },
+      overrideAccess: false,
+      user: memberA,
+    })
+    const doc = await payload.findByID({ collection: 'members', id: memberA.id, overrideAccess: true })
+    expect(doc.membershipExpires ?? null).toBeNull()
+  })
+
+  it('keeps payment receipts private to their owner and editors', async () => {
+    await expect(
+      payload.find({ collection: 'payment-receipts', overrideAccess: false }),
+    ).rejects.toThrow(FORBIDDEN)
+    const own = await payload.find({ collection: 'payment-receipts', overrideAccess: false, user: memberA })
+    expect(own.docs.every((d) => (typeof d.owner === 'object' ? d.owner.id : d.owner) === memberA.id)).toBe(true)
+  })
+
+  it('works out expiry, renewal window and expired memberships', () => {
+    const now = new Date('2026-06-15T00:00:00.000Z')
+    const day = 86_400_000
+    const at = (offsetDays: number) => new Date(now.getTime() + offsetDays * day).toISOString()
+    expect(membershipStanding({ status: 'pending' }, now)).toMatchObject({ standing: 'none', canRenew: false })
+    expect(membershipStanding({ status: 'approved', membershipExpires: at(90) }, now)).toMatchObject({ standing: 'active', canRenew: false })
+    expect(membershipStanding({ status: 'approved', membershipExpires: at(20) }, now)).toMatchObject({ standing: 'expiring', canRenew: true })
+    expect(membershipStanding({ status: 'approved', membershipExpires: at(-1) }, now)).toMatchObject({ standing: 'expired', canRenew: true })
+    // A renewal already sent can't be sent twice
+    expect(membershipStanding({ status: 'renewal-pending', membershipExpires: at(-1) }, now).canRenew).toBe(false)
+    // Early renewal keeps the remaining time; a lapsed one restarts from today
+    expect(nextExpiry(at(10), now).toISOString()).toBe(addOneYear(new Date(at(10))).toISOString())
+    expect(nextExpiry(at(-10), now).toISOString()).toBe(addOneYear(now).toISOString())
+    // 29 February rolls to 28 February
+    expect(addOneYear(new Date('2028-02-29T00:00:00.000Z')).toISOString()).toBe('2029-02-28T00:00:00.000Z')
   })
 })
