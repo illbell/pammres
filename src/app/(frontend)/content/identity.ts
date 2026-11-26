@@ -32,7 +32,7 @@ export const coreValues: CoreValue[] = [
     description:
       'We nurture a welcoming, multidisciplinary community where seasoned practitioners and emergent scholars across all Philippine regions, sectors, and backgrounds mentor one another in respectful camaraderie.',
     photo: {
-      src: '/images/value-1.jpg',
+      src: '/images/value-1.webp',
       alt: 'Educators working together around tables with laptops and papers during a group workshop',
       brief: 'members together, fellowship or mentoring moment, 3:2',
     },
@@ -44,7 +44,7 @@ export const coreValues: CoreValue[] = [
     description:
       'We pursue excellence in integrating qualitative and quantitative approaches—constantly refining our craft to uphold world-class standards while developing an indigenized Filipino mixed methods tradition.',
     photo: {
-      src: '/images/value-2.jpg',
+      src: '/images/value-2.webp',
       alt: 'A PAMMRES member going over printed materials with a fellow researcher at an international conference',
       brief: 'hands-on workshop or training session, 3:2',
     },

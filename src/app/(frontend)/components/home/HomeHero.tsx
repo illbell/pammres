@@ -11,7 +11,7 @@ import { button, focusRingOnDark } from '../ui'
 // Real PAMMRES photos from /public/images. All landscape, so the collage uses landscape tiles.
 const collage: SitePhotoData[] = [
   {
-    src: '/images/members-1.jpg',
+    src: '/images/members-1.webp',
     alt: 'PAMMRES members in their association shirts with a fellow mixed methods scholar at an international conference',
     brief: 'members group photo, 16:10',
   },
@@ -21,7 +21,7 @@ const collage: SitePhotoData[] = [
     brief: 'conference delegates, 4:3',
   },
   {
-    src: '/images/members-4.jpg',
+    src: '/images/members-4.webp',
     alt: 'PAMMRES members taking a selfie at Torrens University Australia',
     brief: 'members together, 4:3',
   },

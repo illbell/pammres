@@ -19,7 +19,7 @@ const headerImages = {
   research: '/images/workshop-3.webp',
   resources: '/images/value-4.webp',
   contact: '/images/workshop-1.jpg',
-  affiliates: '/images/members-1.jpg',
+  affiliates: '/images/members-1.webp',
 } as const
 
 export type PageHeaderImage = keyof typeof headerImages

@@ -91,7 +91,7 @@ Content lives in `content/identity.ts` (Vision, Mission, Core Values) and `conte
 - [x] Vision card (crimson top border) and Mission card (navy top border) with the final wording.
 - [x] Grid of 5 Core Value cards: number, title, tagline and full text.
 - [x] Core Value cards have a 3:2 photo slot at the top, with the number badge in its corner (client request). Each shows a placeholder until its file exists.
-- [x] Core Value photos (client, 2026-11-26): `public/images/value-1.jpg` to `value-5.webp`, with alt text in `content/identity.ts`.
+- [x] Core Value photos (client, 2026-11-26): `public/images/value-1.webp` to `value-5.webp`, with alt text in `content/identity.ts`.
 - [x] Emblem meaning on a cream band, with the two annotated callouts.
 - [x] National Officers: all 14 from the guide, in rows of 2 / 3 / 6 / 3. Each shows initials until a headshot exists.
 - [ ] Officer headshots **(needs client)**: `public/images/officers/<slug>.jpg`, square. Slugs are in `content/officers.ts`. They appear automatically.
