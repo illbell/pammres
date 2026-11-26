@@ -23,6 +23,7 @@ export default async function LoginPage({ searchParams }: Props) {
   return (
     <main id="main">
       <PageHeader
+        image="membership"
         title="Member Login"
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Member Login' }]}
       />

@@ -69,7 +69,7 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
   - Cards: subtle navy top border, gold icons, lift on hover.
   - Vision card: crimson top border. Mission card: navy top border.
   - Officer grid: circular headshots, bold name, title, institution.
-  - Page headers on inner pages: navy banner with a gold bottom rule, centered white title and a breadcrumb.
+  - Page headers on inner pages: a section photo under a navy overlay, with a gold bottom rule, centered white title and a breadcrumb (client revision, 2026-11-26). Each section's photo is set in `headerImages` in `components/PageHeader.tsx`; pages choose one with the `image` prop.
 - **Logo meaning**:
   - Red and blue cyclical arrows: members continuously sharing research perspectives and growing in method.
   - Central white triangle (Q+Q): methodological triangulation, meaning validity, openness and integrity.

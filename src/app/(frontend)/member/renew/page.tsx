@@ -28,6 +28,7 @@ export default async function RenewPage() {
   return (
     <main id="main">
       <PageHeader
+        image="membership"
         eyebrow="Membership"
         title="Renew your membership"
         breadcrumbs={[

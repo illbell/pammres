@@ -33,6 +33,7 @@ export default async function NewsPostPage({ params }: Props) {
   return (
     <main id="main">
       <PageHeader
+        image="news"
         eyebrow={formatNewsDate(post.publishedDate)}
         title={post.title}
         subtitle={post.summary}

@@ -211,6 +211,7 @@ export default async function MemberPage({ searchParams }: Props) {
   return (
     <main id="main">
       <PageHeader
+        image="membership"
         eyebrow="Member area"
         title={`Welcome, ${member.firstName}`}
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'My account' }]}

@@ -20,6 +20,7 @@ export default function AffiliatesPage() {
     // mb-0!: the crimson band sits directly on the footer
     <main id="main" className="mb-0!">
       <PageHeader
+        image="affiliates"
         eyebrow="Global Network"
         title="Affiliates"
         subtitle="PAMMRES is the official Philippine affiliate of MMIRA, part of a worldwide network of mixed methods research associations."

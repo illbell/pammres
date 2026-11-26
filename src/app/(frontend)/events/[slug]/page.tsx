@@ -35,6 +35,7 @@ export default async function EventPage({ params }: Props) {
   return (
     <main id="main">
       <PageHeader
+        image="events"
         eyebrow={event.typeLabel}
         title={event.title}
         subtitle={event.summary}

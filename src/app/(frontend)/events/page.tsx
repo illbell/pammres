@@ -51,6 +51,7 @@ export default async function EventsPage() {
     // mb-0!: the crimson band sits directly on the footer
     <main id="main" className="mb-0!">
       <PageHeader
+        image="events"
         title="Events, Training & Conferences"
         subtitle="Upcoming PAMMRES webinars, workshops and conferences, and past trainings since 2018."
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Events & Training' }]}

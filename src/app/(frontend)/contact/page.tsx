@@ -36,6 +36,7 @@ export default async function ContactPage() {
   return (
     <main id="main">
       <PageHeader
+        image="contact"
         title="Linkages & Contact"
         subtitle="Our partners and linkages, hosting a workshop or sponsoring a convention, and how to reach the PAMMRES secretariat."
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Linkages & Contact' }]}

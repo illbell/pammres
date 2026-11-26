@@ -23,6 +23,7 @@ export default async function NewsPage() {
   return (
     <main id="main">
       <PageHeader
+        image="news"
         eyebrow="Latest from PAMMRES"
         title="News"
         subtitle="Announcements, milestones and stories from the PAMMRES community."

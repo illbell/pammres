@@ -47,6 +47,7 @@ export default function ResearchPage() {
     // mb-0!: the crimson band sits directly on the footer
     <main id="main" className="mb-0!">
       <PageHeader
+        image="research"
         title="Research, Publications & Policy Impact"
         subtitle="Advancing rigorous, indigenized, and globally relevant inquiry, and translating evidence into policies, programs, and practice."
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Research & Policy' }]}

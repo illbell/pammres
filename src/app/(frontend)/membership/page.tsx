@@ -90,6 +90,7 @@ export default function MembershipPage() {
     // mb-0!: the crimson band sits directly on the footer
     <main id="main" className="mb-0!">
       <PageHeader
+        image="membership"
         title="Membership"
         subtitle="Membership categories, benefits, and how to join PAMMRES."
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Membership' }]}

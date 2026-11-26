@@ -64,6 +64,7 @@ export default async function ProfileStepPage({ params }: Props) {
   return (
     <main id="main">
       <PageHeader
+        image="membership"
         eyebrow={`Step ${step} of ${MEMBER_STEPS}`}
         title={info.title}
         breadcrumbs={[

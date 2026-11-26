@@ -27,6 +27,7 @@ export default function ResourcesPage() {
     // mb-0!: the crimson band sits directly on the footer
     <main id="main" className="mb-0!">
       <PageHeader
+        image="resources"
         title="Resources"
         subtitle="Learning materials and research networks for mixed methods researchers."
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Resources' }]}

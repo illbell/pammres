@@ -365,6 +365,7 @@ export default function AboutPage() {
     // mb-0!: the crimson band sits directly on the footer
     <main id="main" className="mb-0!">
       <PageHeader
+        image="about"
         eyebrow="Who We Are"
         title="About PAMMRES"
         subtitle="Advancing a Filipino fellowship of seasoned and emergent mixed methods scholars in service of the marginalized and the nation."

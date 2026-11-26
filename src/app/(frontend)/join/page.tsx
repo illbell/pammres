@@ -22,6 +22,7 @@ export default async function JoinPage() {
   return (
     <main id="main">
       <PageHeader
+        image="membership"
         eyebrow="Membership"
         title="Join PAMMRES"
         subtitle="Create your account, then complete your membership profile at your own pace."
