@@ -1,21 +1,26 @@
-// Site navigation shared by the header and footer (labels from the website guide).
+// Site navigation shared by the header and footer.
+// Header items follow the client's 2026-11-26 revision, which replaces the guide's list.
+// Research & Policy (/research) is no longer in the header; the footer links to it.
 
 export type NavLink = { label: string; href: string }
 
 export const navItems: NavLink[] = [
   { label: 'Home', href: '/' },
-  { label: 'About Us', href: '/about' },
+  { label: 'About', href: '/about' },
   { label: 'Membership', href: '/membership' },
-  { label: 'Events & Training', href: '/events' },
-  { label: 'Research & Policy', href: '/research' },
-  { label: 'Mentorship', href: '/mentorship' },
+  { label: 'Events', href: '/events' },
+  { label: 'News', href: '/news' },
+  { label: 'Resources', href: '/resources' },
+  { label: 'Contact', href: '/contact' },
+  { label: 'Affiliates', href: '/affiliates' },
 ]
 
-/** "Join PAMMRES" / "Become a Member" calls to action. */
-export const joinHref = '/membership#apply'
+/** "Join PAMMRES" / "Become a Member" calls to action: create a member account. */
+export const joinHref = '/join'
 
-// TODO: point at the real member portal once its scope is decided (Payload auth or external).
-export const memberLoginHref = '/membership#member-login'
+/** Member login, and the member area a signed-in member lands on. */
+export const memberLoginHref = '/login'
+export const memberAreaHref = '/member'
 
 export const contactHref = '/contact'
 
@@ -26,15 +31,16 @@ export const footerQuickLinks: NavLink[] = [
   { label: 'Vision & Core Values', href: '/about#vision-mission' },
   { label: 'National Officers', href: '/about#officers' },
   { label: 'Constitution & By-Laws', href: '/about#governance' },
+  { label: 'News', href: '/news' },
+  { label: 'Affiliates', href: '/affiliates' },
 ]
 
 export const footerProgramLinks: NavLink[] = [
   { label: 'Membership Portal', href: '/membership' },
-  { label: 'Mentorship Program', href: '/mentorship' },
+  { label: 'Resources', href: '/resources' },
+  { label: 'Research & Policy', href: '/research' },
   { label: 'Research Journal', href: '/research#journal' },
   { label: 'Upcoming Events', href: '/events' },
 ]
-
-export const regions = ['Luzon', 'Visayas', 'Mindanao'] as const
 
 // Contact email, Facebook and the announcement bar are edited in the admin: Site Settings.

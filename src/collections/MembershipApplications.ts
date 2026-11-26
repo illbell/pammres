@@ -2,12 +2,26 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../access'
 
-// Categories from the website guide (Membership & Chapters).
+// Membership categories and fees (client revision, 2026-11-26). These are
+// the categories offered on the site and in the application form.
 export const membershipCategories = [
-  { label: 'Full Member (individual)', value: 'full' },
-  { label: 'Associate / Emergent Scholar (individual)', value: 'associate' },
+  { label: 'Regular Member (individual)', value: 'regular' },
   { label: 'Student (individual)', value: 'student' },
   { label: 'Institutional Member', value: 'institutional' },
+] as const
+
+/** Membership fee per category, in Philippine pesos. */
+export const membershipFees: Record<(typeof membershipCategories)[number]['value'], number> = {
+  regular: 500,
+  student: 300,
+  institutional: 2000,
+}
+
+// Categories from before the revision. Kept as admin-only options so earlier
+// applications stay valid; the form no longer offers them.
+const legacyMembershipCategories = [
+  { label: 'Full Member (old category)', value: 'full' },
+  { label: 'Associate / Emergent Scholar (old category)', value: 'associate' },
 ] as const
 
 export const memberRegions = [
@@ -35,11 +49,12 @@ export const MembershipApplications: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'category', 'institution', 'paymentMethod', 'status', 'createdAt'],
     description:
-      'Applications from the Membership page. Verify the payment reference, then set the status.',
+      'Applications sent through the old one-page membership form (before member accounts). New members now appear under Members.',
   },
   access: {
     read: authenticated,
-    create: authenticated,
+    // Closed: new members sign up for an account instead (see Members). Kept for earlier applications.
+    create: () => false,
     update: authenticated,
     delete: authenticated,
   },
@@ -60,7 +75,7 @@ export const MembershipApplications: CollectionConfig = {
           name: 'category',
           type: 'select',
           required: true,
-          options: [...membershipCategories],
+          options: [...membershipCategories, ...legacyMembershipCategories],
         },
         { name: 'region', type: 'select', required: true, options: [...memberRegions] },
       ],

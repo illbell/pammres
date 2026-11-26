@@ -7,6 +7,16 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+  // Optional separate output folder, e.g. to build while `pnpm dev` is using .next
+  distDir: process.env.NEXT_DIST_DIR || '.next',
+  experimental: {
+    // Member profile step 3 uploads a 2x2 photo (up to 2 MB) through a server action.
+    serverActions: { bodySizeLimit: '3mb' },
+  },
+  // The Mentorship page moved to /resources (client revision, 2026-11-26).
+  async redirects() {
+    return [{ source: '/mentorship', destination: '/resources', permanent: true }]
+  },
   images: {
     localPatterns: [
       {

@@ -9,7 +9,8 @@ import { SectionHeading } from '../SectionHeading'
 import { SitePhoto } from '../SitePhoto'
 import { textLink } from '../ui'
 
-// Captions verbatim from the website guide. TODO: describe each real photo in `alt` once added.
+// Captions verbatim from the website guide.
+// TODO: UP Manila and Bulacan photos still needed (needs client: which photo is from which event).
 const gallery: (SitePhotoData & { caption: string })[] = [
   {
     src: '/images/home/gallery-up-manila.jpg',
@@ -18,8 +19,8 @@ const gallery: (SitePhotoData & { caption: string })[] = [
     caption: 'Inter-University Seminar-Workshop on Research Methods (UP Manila)',
   },
   {
-    src: '/images/home/gallery-mixed-methods-fair.jpg',
-    alt: 'The Filipino Mixed Methods Fair',
+    src: '/images/workshop-1.jpg',
+    alt: "A speaker at Halo-Halo 3: The Filipino Mixed Methods Fair, with Dr. John W. Creswell's session, Motivating a Mixed Methods Mindset, on screen",
     brief: 'Filipino Mixed Methods Fair, 4:3',
     caption: 'The Filipino Mixed Methods Fair & International Colloquia',
   },

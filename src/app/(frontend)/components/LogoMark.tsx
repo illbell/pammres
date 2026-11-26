@@ -1,32 +1,32 @@
+import Image from 'next/image'
 import React from 'react'
 
 /**
- * Interim emblem: red and blue cyclical arrows around a white triangle (Q+Q),
- * in the shape of the PAMMRES logo.
- * TODO: replace with the official emblem artwork (SVG preferred) once PAMMRES supplies it.
+ * The official PAMMRES Q+Q emblem (public/images/pammres-logo.svg): red and
+ * blue cyclical arrows around the Q+Q triangle. The file has a white square
+ * background, so it's clipped to a circle to sit cleanly on navy too.
+ * Decorative wherever the PAMMRES name sits beside it, so the default alt is
+ * empty; pass `alt` where the emblem stands alone.
  */
-export function LogoMark({ className = 'size-8' }: { className?: string }) {
+export function LogoMark({
+  className = 'size-8',
+  alt = '',
+  priority = false,
+}: {
+  /** Size classes, e.g. "size-10 lg:size-12" */
+  className?: string
+  alt?: string
+  priority?: boolean
+}) {
   return (
-    <svg viewBox="0 0 32 32" className={`shrink-0 ${className}`} aria-hidden="true">
-      <rect width="32" height="32" rx="8" className="fill-navy" />
-      {/* Red arrow, over the top */}
-      <path
-        d="M6 16 A10 10 0 0 1 26 16 M23.4 13.6 L26 16.6 L28.6 13.6"
-        className="fill-none stroke-crimson"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Blue arrow, around the bottom */}
-      <path
-        d="M26 16 A10 10 0 0 1 6 16 M3.4 18.4 L6 15.4 L8.6 18.4"
-        className="fill-none stroke-[#5b8fd6]"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Triangulation (Q+Q) */}
-      <path d="M16 10.5 L21 19.5 L11 19.5 Z" className="fill-white" />
-    </svg>
+    <Image
+      src="/images/pammres-logo.svg"
+      alt={alt}
+      width={214}
+      height={210}
+      priority={priority}
+      unoptimized
+      className={`shrink-0 rounded-full object-cover ${className}`}
+    />
   )
 }

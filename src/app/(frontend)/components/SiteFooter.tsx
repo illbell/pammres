@@ -7,7 +7,6 @@ import {
   footerProgramLinks,
   footerQuickLinks,
   type NavLink,
-  regions,
 } from './navigation'
 import { getSiteSettings } from '../data/cms'
 import { Placeholder } from './Placeholder'
@@ -105,22 +104,6 @@ export async function SiteFooter() {
               </Link>
             </li>
           </ul>
-          <h3 className="mt-7 text-sm font-semibold text-white">Regional Chapter Inquiries</h3>
-          <ul className="mt-3 flex flex-wrap gap-2" aria-label="Regions">
-            {regions.map((region) => (
-              <li
-                key={region}
-                className="rounded-full border border-white/25 px-3.5 py-1 text-sm text-white/85"
-              >
-                {region}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 text-base">
-            <Link href={contactHref} className={linkClass}>
-              Ask about a chapter in your region
-            </Link>
-          </p>
         </div>
       </div>
 

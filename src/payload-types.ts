@@ -63,6 +63,7 @@ export type SupportedTimezones =
 
 export interface Config {
   auth: {
+    members: MemberAuthOperations;
     users: UserAuthOperations;
   };
   blocks: {};
@@ -70,10 +71,13 @@ export interface Config {
     officers: Officer;
     'theme-groups': ThemeGroup;
     events: Event;
+    news: News;
     partners: Partner;
+    members: Member;
     'membership-applications': MembershipApplication;
     'contact-messages': ContactMessage;
     media: Media;
+    'member-photos': MemberPhoto;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -85,10 +89,13 @@ export interface Config {
     officers: OfficersSelect<false> | OfficersSelect<true>;
     'theme-groups': ThemeGroupsSelect<false> | ThemeGroupsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
+    news: NewsSelect<false> | NewsSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
+    members: MembersSelect<false> | MembersSelect<true>;
     'membership-applications': MembershipApplicationsSelect<false> | MembershipApplicationsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'member-photos': MemberPhotosSelect<false> | MemberPhotosSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -109,10 +116,28 @@ export interface Config {
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: Member | User;
   jobs: {
     tasks: unknown;
     workflows: unknown;
+  };
+}
+export interface MemberAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
   };
 }
 export interface UserAuthOperations {
@@ -262,6 +287,42 @@ export interface Event {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+  id: string;
+  title: string;
+  /**
+   * One or two sentences for the News listing.
+   */
+  summary: string;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  coverImage?: (string | null) | Media;
+  publishedDate: string;
+  /**
+   * Filled from the title if left empty.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners".
  */
 export interface Partner {
@@ -290,7 +351,94 @@ export interface Partner {
   createdAt: string;
 }
 /**
- * Applications from the Membership page. Verify the payment reference, then set the status.
+ * Member accounts from the website. Check the payment reference, then set the status to Approved or Declined. To reset a forgotten password, open the member and use "Change password".
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members".
+ */
+export interface Member {
+  id: string;
+  fullName?: string | null;
+  firstName: string;
+  middleName?: string | null;
+  lastName: string;
+  homeAddress?: string | null;
+  institution?: string | null;
+  highestEducation?: string | null;
+  photo?: (string | null) | MemberPhoto;
+  publishedResearch?: {
+    title?: string | null;
+    year?: string | null;
+    publisher?: string | null;
+    design?: ('qual' | 'quant' | 'mixed') | null;
+  };
+  unpublishedResearch?: {
+    title?: string | null;
+    year?: string | null;
+    publisher?: string | null;
+    design?: ('qual' | 'quant' | 'mixed') | null;
+  };
+  researchInterests?: ('educational' | 'science' | 'program-evaluation' | 'business' | 'methodology')[] | null;
+  yearsResearching?: number | null;
+  webinarTopic?: string | null;
+  category?: ('regular' | 'student' | 'institutional') | null;
+  paymentMethod?: ('bank-transfer' | 'gcash' | 'not-yet') | null;
+  paymentReference?: string | null;
+  privacyConsent?: boolean | null;
+  status: 'incomplete' | 'pending' | 'payment-verified' | 'approved' | 'declined';
+  /**
+   * Set automatically when approved.
+   */
+  memberSince?: string | null;
+  /**
+   * Profile steps done (of 4).
+   */
+  completedSteps?: number | null;
+  /**
+   * Only visible to editors.
+   */
+  internalNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'members';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "member-photos".
+ */
+export interface MemberPhoto {
+  id: string;
+  owner: string | Member;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * Applications sent through the old one-page membership form (before member accounts). New members now appear under Members.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "membership-applications".
@@ -300,7 +448,7 @@ export interface MembershipApplication {
   name: string;
   email: string;
   phone?: string | null;
-  category: 'full' | 'associate' | 'student' | 'institutional';
+  category: 'regular' | 'student' | 'institutional' | 'full' | 'associate';
   region: 'luzon' | 'visayas' | 'mindanao' | 'abroad';
   institution: string;
   position?: string | null;
@@ -397,8 +545,16 @@ export interface PayloadLockedDocument {
         value: string | Event;
       } | null)
     | ({
+        relationTo: 'news';
+        value: string | News;
+      } | null)
+    | ({
         relationTo: 'partners';
         value: string | Partner;
+      } | null)
+    | ({
+        relationTo: 'members';
+        value: string | Member;
       } | null)
     | ({
         relationTo: 'membership-applications';
@@ -413,14 +569,23 @@ export interface PayloadLockedDocument {
         value: string | Media;
       } | null)
     | ({
+        relationTo: 'member-photos';
+        value: string | MemberPhoto;
+      } | null)
+    | ({
         relationTo: 'users';
         value: string | User;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'members';
+        value: string | Member;
+      }
+    | {
+        relationTo: 'users';
+        value: string | User;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -430,10 +595,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: string;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'members';
+        value: string | Member;
+      }
+    | {
+        relationTo: 'users';
+        value: string | User;
+      };
   key?: string | null;
   value?:
     | {
@@ -513,6 +683,21 @@ export interface EventsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news_select".
+ */
+export interface NewsSelect<T extends boolean = true> {
+  title?: T;
+  summary?: T;
+  content?: T;
+  coverImage?: T;
+  publishedDate?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "partners_select".
  */
 export interface PartnersSelect<T extends boolean = true> {
@@ -526,6 +711,64 @@ export interface PartnersSelect<T extends boolean = true> {
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members_select".
+ */
+export interface MembersSelect<T extends boolean = true> {
+  fullName?: T;
+  firstName?: T;
+  middleName?: T;
+  lastName?: T;
+  homeAddress?: T;
+  institution?: T;
+  highestEducation?: T;
+  photo?: T;
+  publishedResearch?:
+    | T
+    | {
+        title?: T;
+        year?: T;
+        publisher?: T;
+        design?: T;
+      };
+  unpublishedResearch?:
+    | T
+    | {
+        title?: T;
+        year?: T;
+        publisher?: T;
+        design?: T;
+      };
+  researchInterests?: T;
+  yearsResearching?: T;
+  webinarTopic?: T;
+  category?: T;
+  paymentMethod?: T;
+  paymentReference?: T;
+  privacyConsent?: T;
+  status?: T;
+  memberSince?: T;
+  completedSteps?: T;
+  internalNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  resetPasswordRequestedAt?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -569,6 +812,24 @@ export interface ContactMessagesSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "member-photos_select".
+ */
+export interface MemberPhotosSelect<T extends boolean = true> {
+  owner?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

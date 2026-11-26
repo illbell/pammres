@@ -8,21 +8,21 @@ import { joinHref } from '../navigation'
 import { SitePhoto } from '../SitePhoto'
 import { button, focusRingOnDark } from '../ui'
 
-// TODO: replace the alt text with a description of each real photo once added.
+// Real PAMMRES photos from /public/images.
 const collage: SitePhotoData[] = [
   {
-    src: '/images/home/hero-1.jpg',
-    alt: 'Participants at a PAMMRES seminar-workshop',
+    src: '/images/members-3.jpg',
+    alt: 'PAMMRES members presenting a book to a fellow mixed methods scholar at an international conference',
     brief: 'workshop group photo, portrait 4:5',
   },
   {
-    src: '/images/home/hero-2.jpg',
-    alt: 'A speaker at a PAMMRES symposium',
+    src: '/images/members-5.jpg',
+    alt: 'PAMMRES delegates at the MMIRA 2026 conference',
     brief: 'symposium speaker, 4:3',
   },
   {
-    src: '/images/home/hero-3.jpg',
-    alt: 'PAMMRES members together after an event',
+    src: '/images/members-4.jpg',
+    alt: 'PAMMRES members taking a selfie at Torrens University Australia',
     brief: 'members together, 4:3',
   },
 ]
@@ -48,6 +48,7 @@ export function HomeHero() {
           </p>
           <HeroHeadline
             id="hero-title"
+            as="h2"
             text="Bridging Philippine and Global Scholarship Through Mixed Methods Research"
             className="mt-6 max-w-[20ch] text-[clamp(2.25rem,4.6vw,4rem)]"
           />

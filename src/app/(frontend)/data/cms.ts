@@ -4,7 +4,7 @@ import { getPayload } from 'payload'
 import { cache } from 'react'
 
 import { eventTypes } from '@/collections/Events'
-import type { Event, Media } from '@/payload-types'
+import type { Event, Media, News } from '@/payload-types'
 
 import { resolvePhoto } from '../content/images'
 import { institutions as fallbackInstitutions } from '../content/institutions'
@@ -450,5 +450,67 @@ export const getAllPartners = cache((): Promise<PartnerDirectoryEntry[]> =>
         logo: null,
         type: i.slug === 'deped' ? 'government' : i.slug === 'mda' ? 'basic-education' : 'hei',
       })),
+  ),
+)
+
+/* ---------------------------------- News ---------------------------------- */
+
+export type NewsView = {
+  id: string
+  slug: string
+  title: string
+  summary: string
+  publishedDate: string
+  coverImage: { url: string; alt: string } | null
+  content: News['content']
+}
+
+function toNewsView(n: News): NewsView {
+  return {
+    id: String(n.id),
+    slug: n.slug ?? String(n.id),
+    title: n.title,
+    summary: n.summary,
+    publishedDate: n.publishedDate,
+    coverImage: mediaUrl(n.coverImage),
+    content: n.content,
+  }
+}
+
+/** Published news posts, newest first. No built-in fallback: news only comes from the CMS. */
+export const getNews = cache((): Promise<NewsView[]> =>
+  load(
+    'news',
+    async () => {
+      const payload = await getClient()
+      const { docs } = await payload.find({
+        collection: 'news',
+        where: { _status: { equals: 'published' } },
+        sort: '-publishedDate',
+        limit: 100,
+        depth: 1,
+        overrideAccess: false,
+      })
+      return docs.map(toNewsView)
+    },
+    () => [],
+  ),
+)
+
+export const getNewsBySlug = cache((slug: string): Promise<NewsView | null> =>
+  load(
+    `news post "${slug}"`,
+    async () => {
+      const payload = await getClient()
+      const { docs } = await payload.find({
+        collection: 'news',
+        where: { and: [{ slug: { equals: slug } }, { _status: { equals: 'published' } }] },
+        limit: 1,
+        depth: 1,
+        overrideAccess: false,
+      })
+      return docs[0] ? toNewsView(docs[0]) : null
+    },
+    () => null,
   ),
 )

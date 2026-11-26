@@ -9,7 +9,10 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { ContactMessages } from './collections/ContactMessages'
 import { Events } from './collections/Events'
+import { MemberPhotos } from './collections/MemberPhotos'
+import { Members } from './collections/Members'
 import { MembershipApplications } from './collections/MembershipApplications'
+import { News } from './collections/News'
 import { Officers } from './collections/Officers'
 import { Partners } from './collections/Partners'
 import { ThemeGroups } from './collections/ThemeGroups'
@@ -29,10 +32,13 @@ export default buildConfig({
     Officers,
     ThemeGroups,
     Events,
+    News,
     Partners,
+    Members,
     MembershipApplications,
     ContactMessages,
     Media,
+    MemberPhotos,
     Users,
   ],
   globals: [SiteSettings],

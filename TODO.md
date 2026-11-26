@@ -3,6 +3,31 @@
 Work needed to meet `PAMMRES Website Guide.pdf`. See `CLAUDE.md` for the requirements summary.
 Tick items (`[x]`) as they land. Items marked **(needs client)** are blocked on content or assets from PAMMRES.
 
+## 0. Client revisions (2026-11-26)
+
+Requested by PAMMRES after the progress review. Where these conflict with the guide, the client's revision wins.
+
+- [x] **Loading screen with the logo** (`components/SiteLoader.tsx`, mounted in `layout.tsx`). Shows the emblem with a spinning gold ring until the visible images and fonts have loaded, then fades out.
+  - It shows on full page loads only; client-side navigation doesn't show it again.
+  - It gives up after 6s. A CSS fail-safe in `styles.css` hides it after 8s if JS never runs, and `<noscript>` hides it straight away.
+  - It uses a small pre-sized copy of the logo, `public/images/pammres-logo-288.webp`, so the logo appears instantly.
+- [x] **Image-background hero** (`components/home/WelcomeHero.tsx`) above the split hero. Lines: "Welcome to PAMMRES" / full name / "Bridging Philippine and Global Scholarship". It holds the page's `h1`; the split hero headline is now an `h2`.
+  - Background: `public/images/members-1.jpg` (MMIRA 2026 delegation photo).
+  - [ ] Confirm with the client that both heroes should stay (welcome hero + split hero).
+- [x] **The seminar-workshops began in 2018, not 2012**: `WhoWeAre.tsx` quick stat and 3 places in `events/page.tsx`. "Data Privacy Act of 2012" in the membership form is the law's name and stays.
+- [x] **Bigger font**: the root font size is 17px instead of 16px (`html { font-size: 106.25% }` in `styles.css`), so all rem-based text, spacing and breakpoints scale together.
+- [x] **Affiliates page** (`/affiliates`, content in `content/affiliates.ts`): MMIRA, MMIRA-CC (Caribbean Chapter), MMIRA-Oceania and JSMMR. The cards link out in a new tab. Names and descriptions come from each site.
+  - [ ] Affiliate logos **(needs client)**. Optionally move the list into the CMS if it changes often.
+- [x] **New header nav**: Home | About | Membership | Events | News | Resources | Contact | Affiliates (`navigation.ts`). It fits in one row from `lg` up and in the mobile menu.
+  - [x] **News** (`/news`, `/news/[slug]`): new `News` collection (title, summary, rich-text content, cover image, date, drafts). The page shows an empty state until posts are published.
+  - [ ] Add the first news posts in the admin **(needs client: content)**.
+  - [x] **Resources**: the Mentorship & Resources page moved from `/mentorship` to `/resources`. `/mentorship` permanently redirects there (`next.config.ts`).
+  - [x] Resources only, no mentorship (client follow-up): the Research Mentorship Program section is removed. The page keeps the Research Interest Groups & Expertise Directory and the Learning Repository. The footer link "Mentorship Program" is now "Resources".
+  - [x] **Research & Policy** dropped out of the header. The footer's Programs column now links to it.
+  - [x] Member Login / Join PAMMRES stay on the right of the header (not part of the revision).
+  - [x] Fixed: the header's Join PAMMRES button was meant to be hidden below `sm`, but showed (and wrapped) on phones.
+- [x] **Real Q+Q emblem**: `LogoMark` now renders `public/images/pammres-small-logo.webp` (header, footer, Who We Are, About).
+
 ## 1. Foundation: design system & layout
 
 - [x] Replace the palette in `src/app/(frontend)/styles.css` with navy, crimson, gold, white and cream tokens. Remove the green/blue `quan`, `qual` and `integrate` strand colors and update every use of them.
@@ -17,12 +42,12 @@ Tick items (`[x]`) as they land. Items marked **(needs client)** are blocked on 
   - [x] `Accordion`: native `<details>`, no client JS.
   - [x] `OfficerCard`: circular headshot (initials when there's no photo), name, title, institution.
 - [x] Interim `LogoMark` in the logo's shape: red and blue cyclical arrows around a white Q+Q triangle.
-- [ ] Replace `LogoMark` with the real Q+Q emblem. **(needs client: logo file, SVG preferred)**
+- [x] Replace `LogoMark` with the real Q+Q emblem (`public/images/pammres-small-logo.webp`). An SVG would still be sharper if PAMMRES has one.
 - [ ] Fix `pnpm lint`. It fails before linting anything: `@eslint/eslintrc` is imported by `eslint.config.mjs` but not installed.
 
 ## 2. Navigation, header & footer
 
-- [x] `navigation.ts`: Home | About Us | Membership | Events & Training | Research & Policy | Mentorship. No `#` links remain. It also holds `joinHref`, `memberLoginHref`, `partnerHref`, the footer link lists, and `contactEmail` / `facebookUrl` (null until supplied).
+- [x] `navigation.ts`: Home | About Us | Membership | Events & Training | Research & Policy | Mentorship (since replaced by the client's revision, section 0). No `#` links remain. It also holds `joinHref`, `memberLoginHref`, `partnerHref`, the footer link lists, and `contactEmail` / `facebookUrl` (null until supplied).
 - [x] Placeholder pages for `/membership`, `/events`, `/research` and `/mentorship` (`PlannedSections`). They list the guide's subsections with anchor ids, so header and footer links resolve. Replace them in phase 6.
 - [x] `SiteHeader`:
   - [x] Make it sticky. `scroll-padding-top` in `styles.css` keeps anchors clear of it.
@@ -31,7 +56,7 @@ Tick items (`[x]`) as they land. Items marked **(needs client)** are blocked on 
   - [x] Desktop layout: two rows, with links centred in a navy bar with a gold rule below. Six links, two buttons and the full name don't fit on one row at laptop widths.
   - [x] Check the mobile menu: all links plus both buttons; Join PAMMRES also shows in the bar from `sm`.
 - [x] Pre-footer CTA band on the home page: "Ready to advance your mixed methods research journey?" with Join PAMMRES Today / Partner With Us for a Workshop.
-- [ ] Make `/contact#partner` and the Member Login target real. These links currently go to `/contact` with no `#partner` section, and to `/membership#member-login` (phase 6).
+- [ ] Make `/contact#partner` real (the link goes to `/contact`, which has no `#partner` section). Member Login now goes to `/login`.
 - [x] `SiteFooter`, rebuilt as 4 columns on deep navy:
   1. Logo, mission and Facebook link.
   2. Quick Links.
@@ -51,9 +76,9 @@ Sections live in `components/home/`; shared content is in `content/` (`pillars.t
 - [x] Membership & Mentorship spotlight (`MembershipSpotlight`): cream band, two audience cards and a "View Membership Tiers & Apply" button.
 - [x] Institutional reach (`InstitutionalReach`): scrolling strip of the 12 institutions (pauses on hover; static for reduced motion) and a 3-photo strip with the guide's captions.
 - [x] Old full-bleed `HeroPhoto` removed. `SitePhoto` shows a labelled placeholder until the file exists.
-- [ ] Photos **(needs client)**. Drop them in and they appear automatically, then update each `alt`:
-  - `public/images/home/hero-1.jpg` (4:5), `hero-2.jpg`, `hero-3.jpg` (4:3)
-  - `public/images/home/gallery-up-manila.jpg`, `gallery-mixed-methods-fair.jpg`, `gallery-bulacan.jpg` (4:3)
+- [x] Hero collage photos: `members-3.jpg`, `members-5.jpg`, `members-4.jpg` (in `HomeHero.tsx`).
+- [x] Gallery: The Filipino Mixed Methods Fair, `workshop-1.jpg` (Halo-Halo 3).
+- [ ] Gallery photos for the UP Manila and Bulacan seminar-workshops **(needs client: which photo is from which event)**. Until then they show placeholders at `public/images/home/gallery-up-manila.jpg` and `gallery-bulacan.jpg`.
 - [ ] Institution logos **(needs client)**: set `logo` on each entry in `content/institutions.ts`. Until then the strip shows abbreviations and full names.
 - [ ] Re-check the "100+ researchers" and institution count with PAMMRES before launch.
 
@@ -65,6 +90,8 @@ Content lives in `content/identity.ts` (Vision, Mission, Core Values) and `conte
 - [x] Our Story & Affiliation: 65% narrative and a 35% navy quick-facts card. The old placeholder sections are removed.
 - [x] Vision card (crimson top border) and Mission card (navy top border) with the final wording.
 - [x] Grid of 5 Core Value cards: number, title, tagline and full text.
+- [x] Core Value cards have a 3:2 photo slot at the top, with the number badge in its corner (client request). Each shows a placeholder until its file exists.
+- [ ] Core Value photos **(needs client)**: add them to `public/images/core-values/` as `1-bayanihan.jpg`, `2-methodological-rigor.jpg`, `3-integrity.jpg`, `4-curious-inquiry.jpg` and `5-social-responsibility.jpg` (3:2 landscape). Then replace each `alt` in `content/identity.ts` with a description of the photo.
 - [x] Emblem meaning on a cream band, with the two annotated callouts.
 - [x] National Officers: all 14 from the guide, in rows of 2 / 3 / 6 / 3. Each shows initials until a headshot exists.
 - [ ] Officer headshots **(needs client)**: `public/images/officers/<slug>.jpg`, square. Slugs are in `content/officers.ts`. They appear automatically.
@@ -100,11 +127,12 @@ All five pages are built. `PlannedSections` is removed. Where the guide gives no
 
 - [x] **Membership** (`/membership`):
   - [x] Why Join: 4 benefit cards, using guide copy.
-  - [x] Categories: Full, Associate/Emergent Scholar, Student, Institutional.
+  - [x] Categories: Regular (₱500), Student (₱300), Institutional (₱2,000), per the client revision of 2026-11-26. They replace Full and Associate/Emergent Scholar, which stay as admin-only "old category" options so earlier applications remain valid.
   - [x] Application steps and form.
   - [x] Member Login placeholder.
-  - [x] Regional & School Chapters (Luzon, Visayas, Mindanao).
-- [ ] Membership fees and eligibility per category **(needs client)**.
+  - [x] ~~Regional & School Chapters (Luzon, Visayas, Mindanao)~~: removed at the client's request (2026-11-26). The page is titled "Membership" instead of "Membership & Chapters".
+- [x] Membership fees: Regular ₱500, Student ₱300, Institutional ₱2,000.
+- [ ] Eligibility per category ("Who it's for") **(needs client)**. Also confirm whether the fees are annual; the page just says "Membership fee".
 - [ ] Bank transfer / GCash account details for step 2 **(needs client)**.
 - [x] **Membership application**: `MembershipApplications` collection (no public access at all, since it holds personal data) plus a server action and form.
   - Validation and honeypot.
@@ -112,7 +140,17 @@ All five pages are built. `PlannedSections` is removed. Where the guide gives no
   - Editors set the status: new → payment verified → approved/declined.
 - [ ] Have PAMMRES review the consent wording and supply a privacy notice to link **(needs client)**.
 - [ ] Email the secretariat when an application or contact message arrives. Needs an email adapter (Resend/SMTP), which isn't configured yet.
-- [ ] **Member Login / directory**: decide the scope (Payload auth for members, or a link out) **(needs client decision)**. It blocks the expertise directory too.
+- [x] **Member accounts** (client request, 2026-11-26).
+  - **Pages:** `/join` (create account) → `/member/apply/1..4` (personal info; published research; unpublished research, interests and 2x2 photo; category and payment) → status Pending → editors approve in the admin under **Members**.
+  - **Member area:** `/member` shows the status, the profile, member resources once approved, and a log-out button. `/login` honours `?next=`.
+  - **Access:** member accounts are separate from editor accounts (`Members` vs `Users`). Access helpers check for an editor (`isEditor` in `src/access`), so members can't edit content. Draft history and Users/Media are now editors-only.
+  - **Photos:** 2x2 photos go in the private `member-photos` collection (git-ignored folder).
+  - **Tests:** `tests/int/members.int.spec.ts`.
+- [x] Research-interest options for step 3, from PAMMRES: Educational Research, Science Research, Program Evaluation, Business Research, Research Methodology.
+- [ ] Members-only resource content (recordings, slides, guides, toolkits) **(needs client)**.
+- [ ] Email service (e.g. Resend) for password reset, approval notices and secretariat alerts. For now, a forgotten password is reset by an editor ("Change password" on the member in the admin).
+- [ ] Deploy: give Coolify a persistent volume for `media/` and `member-photos/` (uploads are stored on local disk).
+- [ ] Expertise directory: can now be built from approved members' profiles.
 - [x] **Events & Training** (`/events`) is driven by the Events collection:
   - [x] Upcoming events, with a calendar badge, Register Now and Details.
   - [x] Conferences & colloquia: upcoming ones only (past ones are listed under Past Trainings).

@@ -14,7 +14,7 @@ import { getEvents } from '../data/cms'
 export const metadata: Metadata = {
   title: 'Events, Training & Conferences',
   description:
-    'Upcoming PAMMRES webinars, workshops and conferences, including The Filipino Mixed Methods Fair, and past seminar-workshops since 2012.',
+    'Upcoming PAMMRES webinars, workshops and conferences, including The Filipino Mixed Methods Fair, and past seminar-workshops since 2018.',
 }
 
 // Events move from "upcoming" to "past" as time passes, so re-check hourly
@@ -52,7 +52,7 @@ export default async function EventsPage() {
     <main id="main" className="mb-0!">
       <PageHeader
         title="Events, Training & Conferences"
-        subtitle="Upcoming PAMMRES webinars, workshops and conferences, and past trainings since 2012."
+        subtitle="Upcoming PAMMRES webinars, workshops and conferences, and past trainings since 2018."
         breadcrumbs={[{ label: 'Home', href: '/' }, { label: 'Events & Training' }]}
       />
 
@@ -102,7 +102,7 @@ export default async function EventsPage() {
         <div className="mx-auto max-w-[1080px] px-4 py-20 md:px-6 md:py-24">
           <SectionHeading
             id="past-title"
-            title="Past Trainings & Gallery (2012–Present)"
+            title="Past Trainings & Gallery (2018–Present)"
             intro="Seminar-workshops and gatherings with partner universities, schools, and agencies."
           />
 

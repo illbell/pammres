@@ -18,7 +18,7 @@ Website for the **Philippine Association of Mixed Methods Researchers and Emerge
 Rules:
 - Use the guide's copy word for word. Do not invent officer names, titles, affiliations, stats, fees or events.
 - The guide only outlines Membership, Events, Research, Mentorship and Contact. Use clearly marked placeholders on those pages until real copy arrives.
-- If the code and the guide disagree, the guide wins (see **Known gaps**).
+- If the code and the guide disagree, the guide wins (see **Known gaps**), except where a dated client revision in `TODO.md` section 0 replaces it.
 
 ## Stack & commands
 
@@ -36,11 +36,13 @@ Rules:
 
 1. **Home**: hero, announcement/next-event bar, Who We Are snapshot, 4 Strategic Pillars, institution logo strip.
 2. **About Us**: Our Story & logo meaning; Vision, Mission & Core Values; National Officers & Executive Board; Theme Group Leaders; Constitution, By-Laws & past officers.
-3. **Membership & Chapters**: Why Join (benefits); categories & fees (Individual: Full, Associate/Emergent Scholar, Student; Institutional); online application, payment verification (bank transfer/GCash) & member login; Regional & School Chapters (Luzon, Visayas, Mindanao).
-4. **Events, Training & Conferences**: upcoming webinars & workshops; conferences & colloquia (The Filipino Mixed Methods Fair); past trainings & gallery (2012 to present).
+3. **Membership & Chapters**: Why Join (benefits); categories & fees (client revision, 2026-11-26: Regular ₱500, Student ₱300, Institutional ₱2,000; set in `membershipFees` in `src/collections/MembershipApplications.ts`); online application, payment verification (bank transfer/GCash) & member login. (The client removed the Regional & School Chapters section on 2026-11-26.)
+4. **Events, Training & Conferences**: upcoming webinars & workshops; conferences & colloquia (The Filipino Mixed Methods Fair); past trainings & gallery (2018 to present; the client corrected the start year).
 5. **Research, Publications & Policy Impact**: PAMMRES Research Journal & proceedings (links to JMMR, IJMRA); Societal Impact & SDG Hub (SDGs 1–10, LGU research hubs, policy briefs); Indigenized Filipino MMR Framework.
-6. **Mentorship & Resources**: Research Mentorship Program; Research Interest Groups & expertise directory; Learning Repository (recordings, slides, joint display guides, toolkits).
+6. **Resources** (`/resources`; `/mentorship` redirects). The client dropped the Mentorship Program section (2026-11-26). It holds: Research Interest Groups & expertise directory; Learning Repository (recordings, slides, joint display guides, toolkits).
 7. **Linkages & Contact**: international & local partners (MMIRA, MOAs/MOUs); Sponsorship & Advocacy (host a workshop / sponsor); Contact & Secretariat (email, Facebook, inquiry form).
+
+Added by the client (2026-11-26): **News** (`/news`, from the `News` collection) and **Affiliates** (`/affiliates`: MMIRA, MMIRA-CC, MMIRA-Oceania, JSMMR).
 
 ## Navigation
 
@@ -48,14 +50,14 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 
 - **Sticky header**:
   - Left: Q+Q emblem and the full association name.
-  - Center: Home | About Us | Membership | Events & Training | Research & Policy | Mentorship.
+  - Center: Home | About | Membership | Events | News | Resources | Contact | Affiliates (client revision, 2026-11-26; Research & Policy is linked from the footer).
   - Right: `Member Login` (outline button) and `Join PAMMRES` (solid crimson button).
 - **Pre-footer band**: crimson with a gold accent. Headline: "Ready to advance your mixed methods research journey?" Buttons: Join PAMMRES Today / Partner With Us for a Workshop.
 - **Footer, 4 columns**:
   1. Logo, short mission and Facebook link.
-  2. Quick Links: About Us, Vision & Core Values, National Officers, Constitution & By-Laws.
-  3. Programs: Membership Portal, Mentorship Program, Research Journal, Upcoming Events.
-  4. Contact Secretariat: email, and regional chapter inquiries for Luzon, Visayas and Mindanao.
+  2. Quick Links: About Us, Vision & Core Values, National Officers, Constitution & By-Laws, News, Affiliates.
+  3. Programs: Membership Portal, Resources, Research & Policy, Research Journal, Upcoming Events.
+  4. Contact Secretariat: email and an inquiry link. (The regional chapter inquiries were removed with the chapters section, 2026-11-26.)
 
 ## Design system
 
@@ -75,13 +77,14 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 ## Page section order
 
 **Home**
-1. Split hero: 60% navy gradient text panel, 40% photo collage. Eyebrow "OFFICIAL PHILIPPINE AFFILIATE OF MMIRA". Headline "Bridging Philippine and Global Scholarship Through Mixed Methods Research". CTAs: Become a Member / Explore Upcoming Webinars →.
-2. White announcement bar under the hero.
-3. Who We Are & logo philosophy, as two columns: the emblem, then the copy and quick stats.
-4. Four Strategic Pillars in a 2×2 card grid: Global Recognition & Standard Setting; Societal Impact & Policy Influence; Organizational Growth & Sustainability; Collaboration & Knowledge Production.
-5. Membership & Mentorship spotlight: a cream band with two cards (Experienced Scholars & Institutions / Emergent Scholars & Students).
-6. Institutional reach: a logo carousel (DLSU, UP Diliman, UP Manila, UST, LCUP, BSU, PUP, DYCI, DLSMHSI, MSU-IIT, MDA, DepEd), then a strip of 3 gallery photos.
-7. Pre-footer CTA band, then the footer.
+1. Welcome hero (client revision): full-width event photo under a navy overlay, "Welcome to PAMMRES" / full name / "Bridging Philippine and Global Scholarship". Holds the page's `h1`.
+2. Split hero: 60% navy gradient text panel, 40% photo collage. Eyebrow "OFFICIAL PHILIPPINE AFFILIATE OF MMIRA". Headline "Bridging Philippine and Global Scholarship Through Mixed Methods Research". CTAs: Become a Member / Explore Upcoming Webinars →.
+3. White announcement bar under the hero.
+4. Who We Are & logo philosophy, as two columns: the emblem, then the copy and quick stats.
+5. Four Strategic Pillars in a 2×2 card grid: Global Recognition & Standard Setting; Societal Impact & Policy Influence; Organizational Growth & Sustainability; Collaboration & Knowledge Production.
+6. Membership & Mentorship spotlight: a cream band with two cards (Experienced Scholars & Institutions / Emergent Scholars & Students).
+7. Institutional reach: a logo carousel (DLSU, UP Diliman, UP Manila, UST, LCUP, BSU, PUP, DYCI, DLSMHSI, MSU-IIT, MDA, DepEd), then a strip of 3 gallery photos.
+8. Pre-footer CTA band, then the footer.
 
 **About Us**
 1. Navy page header with the breadcrumb Home / About Us.
@@ -100,9 +103,11 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 ## CMS content
 
 - **Editable in the admin (`/admin`):**
-  - collections: Officers, Theme Groups, Events, Partners, Membership Applications, Contact Messages
+  - collections: Officers, Theme Groups, Events, News, Partners, Members, Contact Messages (Membership Applications is closed and kept for history)
   - global: Site Settings (announcement, email, Facebook, address)
 - **Pages read content** through the loaders in `src/app/(frontend)/data/cms.ts`, never by calling Payload directly from components. The loaders fall back to `src/app/(frontend)/content/*` when the database is down.
+- **Two kinds of account:** editors (`users`, sign in at `/admin`) and members (`members`, sign in at `/login`). Access must check for an editor (`authenticated`/`isEditor` in `src/access/`), never just "someone is signed in". Give every new collection explicit `read/create/update/delete` (and `readVersions` if drafts) so Payload's "any signed-in user" default never applies.
+- **Member flow:** `/join` → `/member/apply/1..4` → secretariat approves (Members → status). Server actions live in `src/app/(frontend)/member/actions.ts`, and the session helpers (`getCurrentMember`, `requireMember`) in `data/member.ts`. The header checks `/api/members/me` in the browser so pages stay static.
 - **New collections:**
   - use the access helpers in `src/access/`
   - use `revalidatePages([...])` from `src/hooks/revalidate.ts`
@@ -116,6 +121,8 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 
 ## Known gaps (current code vs. guide)
 
+- The root font size is 17px (client asked for bigger text); size everything in rem so it scales.
+- A logo loading screen (`SiteLoader`) covers full page loads until visible images load.
 - The palette and fonts are aligned: the tokens `navy`, `crimson`, `gold`, `cream` etc. are in `styles.css`, with Source Serif 4 for headings. Build new UI from the shared components (`ui.ts`, `SectionHeading`, `PageHeader`, `Card`, `CtaBand`, `Accordion`, `OfficerCard`). Don't write one-off styles.
-- The header, footer and nav match the guide. All links go through `navigation.ts`; don't hardcode hrefs.
+- The header, footer and nav match the guide plus the 2026-11-26 client revision. All links go through `navigation.ts`; don't hardcode hrefs.
 - All pages are built. Content the guide doesn't supply (fees, payment details, journal, directories) is marked with `<Placeholder>`. Forms share `components/form.tsx`.
