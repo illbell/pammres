@@ -5,6 +5,7 @@ import config from '@/payload.config'
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
+import { safeNext } from '@/app/(frontend)/data/member'
 import { signUp } from '@/app/(frontend)/member/actions'
 import type { Member } from '@/payload-types'
 
@@ -175,6 +176,23 @@ describe('member accounts', () => {
     await expect(
       payload.find({ collection: 'contact-messages', overrideAccess: false, user: memberA }),
     ).rejects.toThrow(FORBIDDEN)
+  })
+
+  it('only allows same-site paths after login (no open redirects)', () => {
+    for (const bad of [
+      String.raw`/\evil.com`, // browsers read "/\" as "//"
+      '//evil.com',
+      'https://evil.com',
+      '/%5Cevil.com',
+      '/\tevil',
+      'javascript:alert(1)',
+      '',
+      undefined,
+    ]) {
+      expect(safeNext(bad), String(bad)).toBe('/member')
+    }
+    expect(safeNext('/member/apply/2')).toBe('/member/apply/2')
+    expect(safeNext('/resources?x=1#top')).toBe('/resources?x=1#top')
   })
 
   it('sets memberSince when an editor approves a member', async () => {

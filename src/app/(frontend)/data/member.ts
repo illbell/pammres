@@ -42,7 +42,23 @@ export async function requireMember(next: string): Promise<Member> {
   return member
 }
 
-/** Only same-site paths are allowed as a post-login destination. */
+/**
+ * Only same-site paths are allowed as a post-login destination. Browsers read
+ * "/\evil.com" like "//evil.com", so backslashes and control characters are
+ * rejected outright, and the result must resolve to this site's origin.
+ */
 export function safeNext(next: unknown, fallback = '/member'): string {
-  return typeof next === 'string' && next.startsWith('/') && !next.startsWith('//') ? next : fallback
+  if (typeof next !== 'string' || !next.startsWith('/') || next.startsWith('//')) return fallback
+  // eslint-disable-next-line no-control-regex
+  if (/[\\\u0000-\u001f\u007f]/.test(next)) return fallback
+  try {
+    const base = 'https://same-site.invalid'
+    const url = new URL(next, base)
+    if (url.origin !== base) return fallback
+    // Decoded backslashes (e.g. "/%5Cevil.com") could be re-read as "//" later on.
+    if (decodeURIComponent(url.pathname).includes('\\')) return fallback
+    return url.pathname + url.search + url.hash
+  } catch {
+    return fallback
+  }
 }

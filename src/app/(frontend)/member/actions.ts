@@ -1,11 +1,13 @@
 'use server'
 
 import config from '@payload-config'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getPayload, type Payload } from 'payload'
+import { createLocalReq, getPayload, logoutOperation, type Payload } from 'payload'
+import sharp from 'sharp'
 
 import { MEMBER_PHOTO_MAX_BYTES } from '@/collections/MemberPhotos'
+import { allowRequest, HOUR } from '@/lib/rateLimit'
 import {
   MEMBER_STEPS,
   researchDesigns,
@@ -99,6 +101,15 @@ export async function signUp(_prev: MemberFormState, fd: FormData): Promise<Memb
   if (password.length > 200) errors.password = 'Use 200 characters or fewer.'
   if (Object.keys(errors).length) return fail(errors, values)
 
+  // At most 5 new accounts an hour from one visitor (bot sign-ups).
+  if (!(await allowRequest('sign-up', 5, HOUR))) {
+    return fail(
+      {},
+      values,
+      'Too many accounts have been created from your connection recently. Please try again later, or contact the secretariat.',
+    )
+  }
+
   try {
     const payload = await client()
     const existing = await payload.count({
@@ -168,6 +179,18 @@ export async function logIn(_prev: MemberFormState, fd: FormData): Promise<Membe
 }
 
 export async function logOut() {
+  // End the session on the server too, so a copied token stops working at once
+  // (Payload sessions are on by default; deleting the cookie alone isn't enough).
+  try {
+    const payload = await client()
+    const { user } = await payload.auth({ headers: await headers() })
+    if (user?.collection === 'members') {
+      const req = await createLocalReq({ user }, payload)
+      await logoutOperation({ collection: payload.collections.members, req })
+    }
+  } catch (error) {
+    console.error('[member] Could not end the session on the server', error)
+  }
   ;(await cookies()).delete(AUTH_COOKIE)
   redirect('/')
 }
@@ -230,7 +253,7 @@ export async function saveProfileStep(
   const errors: Record<string, string> = {}
   let values: Record<string, string | string[]> = {}
   let data: Partial<Member> = {}
-  let photo: File | null = null
+  let photo: Buffer | null = null
 
   if (step === 1) {
     const v = {
@@ -282,7 +305,19 @@ export async function saveProfileStep(
     if (file instanceof File && file.size > 0) {
       if (!PHOTO_TYPES.includes(file.type)) errors.photo = 'Upload a JPG, PNG or WebP image.'
       else if (file.size > MEMBER_PHOTO_MAX_BYTES) errors.photo = 'Use an image of 2 MB or less.'
-      else photo = file
+      else {
+        // Re-encode: proves it's a real image, fixes rotation, caps the size and strips
+        // metadata (EXIF can hold GPS coordinates and device details).
+        try {
+          photo = await sharp(Buffer.from(await file.arrayBuffer()), { limitInputPixels: 40_000_000 })
+            .rotate()
+            .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
+            .jpeg({ quality: 85, mozjpeg: true })
+            .toBuffer()
+        } catch {
+          errors.photo = 'That file isn’t a readable image. Try a JPG or PNG.'
+        }
+      }
     }
 
     data = {
@@ -323,10 +358,11 @@ export async function saveProfileStep(
         collection: 'member-photos',
         data: { owner: member.id },
         file: {
-          data: Buffer.from(await photo.arrayBuffer()),
-          mimetype: photo.type,
-          name: photo.name || 'photo.jpg',
-          size: photo.size,
+          data: photo,
+          mimetype: 'image/jpeg',
+          // Our own name, never the uploader's (which can carry personal details)
+          name: `member-${member.id}.jpg`,
+          size: photo.length,
         },
         overrideAccess: true,
       })

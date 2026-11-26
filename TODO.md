@@ -176,5 +176,20 @@ All five pages are built. `PlannedSections` is removed. Where the guide gives no
 - [ ] Per-page `metadata` (title and description), plus Open Graph images.
 - [ ] Update the Playwright e2e tests for the new nav and pages, and the Vitest integration tests for the new collections.
 - [ ] `pnpm lint` and `pnpm build` pass.
-- [ ] Remove the leftover template route `src/app/my-route/route.ts` if it's unused.
+- [x] Removed the leftover template route `src/app/my-route/route.ts`.
 - [ ] Update `README.md`, which still describes the blank Payload template.
+
+## 8. Security (review of 2026-11-26)
+
+- [x] **Open redirect:** fixed in `safeNext` (`/login?next=/\evil.com`).
+- [x] **Startup guard:** the app won't start in production without `PAYLOAD_SECRET` (16+ characters) and `DATABASE_URL`.
+- [x] **Dependencies:** `sharp` 0.35.5; `pnpm-workspace.yaml` overrides for `happy-dom` and `dompurify`. `pnpm audit --prod` is clean.
+- [x] **Security headers** (`next.config.ts`): frame-ancestors/X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy, and HSTS in production.
+- [x] **Logout** ends the Payload session server-side, so copied tokens stop working.
+- [x] **Rate limits:** 5 sign-ups and 5 contact messages per IP per hour (`src/lib/rateLimit.ts`). It's in-memory, so it resets on restart and is per instance.
+- [x] **Member photos** are re-encoded: metadata stripped, max 800px, renamed `member-<id>.jpg`.
+- [x] **GraphQL API** disabled (unused).
+- [x] **Contact Messages** are editors-only (members could read them before).
+- [ ] **Coolify:** make sure `PAYLOAD_SECRET` is set (a fresh 32+ character random value is best) and that the app is served over HTTPS (HSTS is sent).
+- [ ] **Known trade-offs:** sign-up reveals whether an email is already registered. A full script CSP needs nonces and is not set up.
+- [ ] Run `pnpm audit --prod` before each deploy.
