@@ -99,7 +99,7 @@ export function SignUpForm() {
         <Field name="password" label="Password" error={errors.password} hint="At least 8 characters.">
           <TextInput name="password" type="password" autoComplete="new-password" a11y={a11y('password')} />
         </Field>
-        <Field name="confirmPassword" label="Confirm password" error={errors.confirmPassword}>
+        <Field name="confirmPassword" label="Confirm password" error={errors.confirmPassword} hint="Type it again to check.">
           <TextInput name="confirmPassword" type="password" autoComplete="new-password" a11y={a11y('confirmPassword')} />
         </Field>
       </div>
