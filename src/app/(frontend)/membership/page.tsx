@@ -7,7 +7,7 @@ import { membershipFees } from '@/collections/membership'
 import { Card } from '../components/Card'
 import { CtaBand } from '../components/CtaBand'
 import { GlobeIcon, ImpactIcon, NetworkIcon, CheckIcon } from '../components/icons'
-import { contactHref, joinHref, memberLoginHref } from '../components/navigation'
+import { contactHref, joinHref, memberLoginHref, membersHref } from '../components/navigation'
 import { PageHeader } from '../components/PageHeader'
 import { Placeholder } from '../components/Placeholder'
 import { SectionHeading } from '../components/SectionHeading'
@@ -114,6 +114,13 @@ export default function MembershipPage() {
               </li>
             ))}
           </ul>
+          <p className="mt-10 text-center text-base text-ink-muted">
+            Meet the researchers you’ll be joining in our{' '}
+            <Link href={membersHref} className={textLink}>
+              Member Directory
+            </Link>
+            .
+          </p>
         </div>
       </section>
 

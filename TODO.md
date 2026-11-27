@@ -24,6 +24,13 @@ Requested by PAMMRES after the progress review. Where these conflict with the gu
   - [x] **Resources**: the Mentorship & Resources page moved from `/mentorship` to `/resources`. `/mentorship` permanently redirects there (`next.config.ts`).
   - [x] Resources only, no mentorship (client follow-up): the Research Mentorship Program section is removed. The page keeps the Research Interest Groups & Expertise Directory and the Learning Repository. The footer link "Mentorship Program" is now "Resources".
   - [x] **Research & Policy** dropped out of the header. The footer's Programs column now links to it.
+- [x] **Member roster (2026-11-27)**: `PAMMER_Memberslist_2026-11-27.xlsx` (git-ignored) → `scripts/member-list-to-content.py` → `content/member-directory.ts` + `content/publications.ts`.
+  - [x] Public **Member Directory** at `/members`: search and research-interest filter, grouped by institution; linked from the footer Quick Links, Resources and Membership.
+  - [x] Home stats: member count and member research works come from the roster.
+  - [x] Resources: the 4 Research Interest Group cards (with member counts) replace the placeholder; new Member Publications accordion.
+  - [x] 16 member institutions added to `content/institutions.ts`. Run `pnpm seed` to add them to Partners (existing rows are untouched).
+  - [ ] Confirm members agree to being listed publicly **(needs client)**. Their privacy consent covers membership processing.
+  - [ ] Clean up roster entries with no institution (31 listed as "Unspecified / Independent") **(needs client)**.
   - [x] Removed (2026-11-27): the `/research` page and its footer links (Research & Policy, Research Journal), and the `/mentorship` → `/resources` redirect. Old `/mentorship` links now 404.
   - [x] Member Login / Join PAMMRES stay on the right of the header (not part of the revision).
   - [x] Fixed: the header's Join PAMMRES button was meant to be hidden below `sm`, but showed (and wrapped) on phones.

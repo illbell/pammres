@@ -1,16 +1,18 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import React from 'react'
 
 import { Accordion } from '../components/Accordion'
 import { Card } from '../components/Card'
 import { CtaBand } from '../components/CtaBand'
 import { LogoMark } from '../components/LogoMark'
-import { joinHref } from '../components/navigation'
+import { joinHref, membersHref } from '../components/navigation'
 import { OfficerCard } from '../components/OfficerCard'
 import { PageHeader } from '../components/PageHeader'
 import { Placeholder } from '../components/Placeholder'
 import { SectionHeading } from '../components/SectionHeading'
 import { SitePhoto } from '../components/SitePhoto'
+import { button } from '../components/ui'
 import { coreValues, mission, vision } from '../content/identity'
 import { resolvePhoto } from '../content/images'
 import { getOfficerGroups, getPastOfficers, getThemeGroups } from '../data/cms'
@@ -77,6 +79,9 @@ function OurStory() {
               </div>
             ))}
           </dl>
+          <Link href={membersHref} className={`${button('gold', 'md')} mt-8 w-full`}>
+            Browse the Member Directory
+          </Link>
         </aside>
       </div>
     </section>

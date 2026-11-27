@@ -54,3 +54,6 @@ node_modules/
 
 # Internal planning document (kept local; summarized in CLAUDE.md / TODO.md)
 PAMMRES Website Guide.pdf
+
+# Client member roster (personal data; never commit)
+*.xlsx

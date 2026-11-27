@@ -23,6 +23,9 @@ export const memberAreaHref = '/member'
 
 export const contactHref = '/contact'
 
+/** Public member directory (client roster, 2026-11-27). */
+export const membersHref = '/members'
+
 export const partnerHref = '/contact#partner'
 
 export const footerQuickLinks: NavLink[] = [
@@ -30,6 +33,7 @@ export const footerQuickLinks: NavLink[] = [
   { label: 'Vision & Core Values', href: '/about#vision-mission' },
   { label: 'National Officers', href: '/about#officers' },
   { label: 'Constitution & By-Laws', href: '/about#governance' },
+  { label: 'Member Directory', href: '/members' },
   { label: 'News', href: '/news' },
   { label: 'Affiliates', href: '/affiliates' },
 ]

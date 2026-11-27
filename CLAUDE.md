@@ -44,6 +44,8 @@ Rules:
 
 Added by the client (2026-11-26): **News** (`/news`, from the `News` collection) and **Affiliates** (`/affiliates`: MMIRA, MMIRA-CC, MMIRA-Oceania, JSMMR).
 
+Added 2026-11-27: **Member Directory** (`/members`, public), built from the client's member roster. The roster workbook (`*.xlsx`) is git-ignored because it holds phones, emails and home addresses. `scripts/member-list-to-content.py` copies only an allow-list of columns into `content/member-directory.ts` and `content/publications.ts` (also used by the home stats and the Resources interest groups and publications). Re-run it when the roster changes; never import the workbook from app code.
+
 ## Navigation
 
 Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared by the header and footer.
@@ -55,7 +57,7 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 - **Pre-footer band**: crimson with a gold accent. Headline: "Ready to advance your mixed methods research journey?" Buttons: Join PAMMRES Today / Partner With Us for a Workshop.
 - **Footer, 4 columns**:
   1. Logo, short mission and Facebook link.
-  2. Quick Links: About Us, Vision & Core Values, National Officers, Constitution & By-Laws, News, Affiliates.
+  2. Quick Links: About Us, Vision & Core Values, National Officers, Constitution & By-Laws, Member Directory, News, Affiliates.
   3. Programs: Membership Portal, Resources, Upcoming Events.
   4. Contact Secretariat: email and an inquiry link. (The regional chapter inquiries were removed with the chapters section, 2026-11-26.)
 

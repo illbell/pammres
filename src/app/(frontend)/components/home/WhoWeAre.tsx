@@ -1,17 +1,22 @@
 import Link from 'next/link'
 import React from 'react'
 
+import { rosterTotals } from '../../content/member-directory'
 import { getHomePartners } from '../../data/cms'
 import { ArrowRightIcon } from '../icons'
 import { LogoMark } from '../LogoMark'
 import { SectionHeading } from '../SectionHeading'
 import { textLink } from '../ui'
 
-// Quick stats drawn from figures in the website guide.
+// Quick stats: member and study counts come from the client's member roster
+// (content/member-directory.ts); the year is the client's correction to the guide.
 const getStats = (institutionCount: number) => [
-  { value: '100+', label: 'active researchers and educators' },
+  { value: `${rosterTotals.members}`, label: 'researchers and educators in our member directory' },
   { value: `${institutionCount}`, label: 'member institutions and agencies' },
-  { value: '3', label: 'island groups: Luzon, Visayas and Mindanao' },
+  {
+    value: `${rosterTotals.published + rosterTotals.ongoing}`,
+    label: `member research works (${rosterTotals.published} published)`,
+  },
   { value: '2018', label: 'year our seminar-workshops began' },
 ]
 
