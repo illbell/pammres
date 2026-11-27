@@ -1,6 +1,5 @@
 // Site navigation shared by the header and footer.
 // Header items follow the client's 2026-11-26 revision, which replaces the guide's list.
-// Research & Policy (/research) is no longer in the header; the footer links to it.
 
 export type NavLink = { label: string; href: string }
 
@@ -38,8 +37,6 @@ export const footerQuickLinks: NavLink[] = [
 export const footerProgramLinks: NavLink[] = [
   { label: 'Membership Portal', href: '/membership' },
   { label: 'Resources', href: '/resources' },
-  { label: 'Research & Policy', href: '/research' },
-  { label: 'Research Journal', href: '/research#journal' },
   { label: 'Upcoming Events', href: '/events' },
 ]
 

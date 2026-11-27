@@ -24,6 +24,7 @@ Requested by PAMMRES after the progress review. Where these conflict with the gu
   - [x] **Resources**: the Mentorship & Resources page moved from `/mentorship` to `/resources`. `/mentorship` permanently redirects there (`next.config.ts`).
   - [x] Resources only, no mentorship (client follow-up): the Research Mentorship Program section is removed. The page keeps the Research Interest Groups & Expertise Directory and the Learning Repository. The footer link "Mentorship Program" is now "Resources".
   - [x] **Research & Policy** dropped out of the header. The footer's Programs column now links to it.
+  - [x] Removed (2026-11-27): the `/research` page and its footer links (Research & Policy, Research Journal), and the `/mentorship` → `/resources` redirect. Old `/mentorship` links now 404.
   - [x] Member Login / Join PAMMRES stay on the right of the header (not part of the revision).
   - [x] Fixed: the header's Join PAMMRES button was meant to be hidden below `sm`, but showed (and wrapped) on phones.
 - [x] **Real Q+Q emblem**: `LogoMark` now renders `public/images/pammres-small-logo.webp` (header, footer, Who We Are, About).

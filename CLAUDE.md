@@ -38,8 +38,8 @@ Rules:
 2. **About Us**: Our Story & logo meaning; Vision, Mission & Core Values; National Officers & Executive Board; Theme Group Leaders; Constitution, By-Laws & past officers.
 3. **Membership & Chapters**: Why Join (benefits); categories & fees (client revision, 2026-11-26: Regular ₱500, Student ₱300, Institutional ₱2,000; set in `membershipFees` in `src/collections/membership.ts`); online application, payment verification (bank transfer/GCash) & member login. (The client removed the Regional & School Chapters section on 2026-11-26.)
 4. **Events, Training & Conferences**: upcoming webinars & workshops; conferences & colloquia (The Filipino Mixed Methods Fair); past trainings & gallery (2018 to present; the client corrected the start year).
-5. **Research, Publications & Policy Impact**: PAMMRES Research Journal & proceedings (links to JMMR, IJMRA); Societal Impact & SDG Hub (SDGs 1–10, LGU research hubs, policy briefs); Indigenized Filipino MMR Framework.
-6. **Resources** (`/resources`; `/mentorship` redirects). The client dropped the Mentorship Program section (2026-11-26). It holds: Research Interest Groups & expertise directory; Learning Repository (recordings, slides, joint display guides, toolkits).
+5. **Research, Publications & Policy Impact**: removed (2026-11-27). The `/research` page had only placeholders and was linked from the footer alone, so it was deleted.
+6. **Resources** (`/resources`). The client dropped the Mentorship Program section (2026-11-26). It holds: Research Interest Groups & expertise directory; Learning Repository (recordings, slides, joint display guides, toolkits).
 7. **Linkages & Contact**: international & local partners (MMIRA, MOAs/MOUs); Sponsorship & Advocacy (host a workshop / sponsor); Contact & Secretariat (email, Facebook, inquiry form).
 
 Added by the client (2026-11-26): **News** (`/news`, from the `News` collection) and **Affiliates** (`/affiliates`: MMIRA, MMIRA-CC, MMIRA-Oceania, JSMMR).
@@ -50,13 +50,13 @@ Nav items live in `src/app/(frontend)/components/navigation.ts` and are shared b
 
 - **Sticky header**:
   - Left: Q+Q emblem and the full association name.
-  - Center: Home | About | Membership | Events | News | Resources | Contact | Affiliates (client revision, 2026-11-26; Research & Policy is linked from the footer).
+  - Center: Home | About | Membership | Events | News | Resources | Contact | Affiliates (client revision, 2026-11-26).
   - Right: `Member Login` (outline button) and `Join PAMMRES` (solid crimson button).
 - **Pre-footer band**: crimson with a gold accent. Headline: "Ready to advance your mixed methods research journey?" Buttons: Join PAMMRES Today / Partner With Us for a Workshop.
 - **Footer, 4 columns**:
   1. Logo, short mission and Facebook link.
   2. Quick Links: About Us, Vision & Core Values, National Officers, Constitution & By-Laws, News, Affiliates.
-  3. Programs: Membership Portal, Resources, Research & Policy, Research Journal, Upcoming Events.
+  3. Programs: Membership Portal, Resources, Upcoming Events.
   4. Contact Secretariat: email and an inquiry link. (The regional chapter inquiries were removed with the chapters section, 2026-11-26.)
 
 ## Design system

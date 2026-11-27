@@ -29,10 +29,6 @@ const nextConfig: NextConfig = {
     ]
     return [{ source: '/:path*', headers: securityHeaders }]
   },
-  // The Mentorship page moved to /resources (client revision, 2026-11-26).
-  async redirects() {
-    return [{ source: '/mentorship', destination: '/resources', permanent: true }]
-  },
   images: {
     localPatterns: [
       {

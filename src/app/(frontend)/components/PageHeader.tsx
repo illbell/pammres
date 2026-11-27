@@ -16,7 +16,6 @@ const headerImages = {
   membership: '/images/members-7.webp',
   events: '/images/workshop-5.webp',
   news: '/images/workshop-4.webp',
-  research: '/images/workshop-3.webp',
   resources: '/images/value-4.webp',
   contact: '/images/workshop-1.jpg',
   affiliates: '/images/members-1.webp',
