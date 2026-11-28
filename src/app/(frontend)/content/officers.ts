@@ -26,7 +26,8 @@ export const officerGroups: OfficerGroup[] = [
     id: 'executive',
     title: 'Executive Leadership',
     size: 'lg',
-    columns: 'sm:grid-cols-2',
+    // Single column: the Executive VP sits below the President.
+    columns: '',
     officers: [
       {
         slug: 'benito-teehankee',
